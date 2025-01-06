@@ -235,7 +235,7 @@
 
  
 <!--  ============================================== append task list with javascript (start) ================================================================= -->
-  <script>
+  <!-- <script>
 const tableApi = async () => {
     const accordion_main = document.getElementById('accordion_main');
     const url = "{{route('api.get_task_list')}}";
@@ -448,7 +448,7 @@ const tableApi = async () => {
 
 };
 tableApi();
-</script>  
+</script>   -->
 <!--  ============================================== append task list with javascript (end) ================================================================= -->
 
 @endsection 
