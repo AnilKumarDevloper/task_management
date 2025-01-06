@@ -73,8 +73,7 @@
                                               <th style="min-width:150px;">Compliance</th>
                                               <th>Status</th>
                                               <th>Due Date</th>
-                                              <th>Compliance Date</th>
-                                              <th>Client</th>
+                                              <th>Compliance Date</th> 
                                               <th>Responsibility</th>
                                               <th style="min-width:370px;">Edit Trail</th>
                                               <th width="120px">Reminder</th>
@@ -99,7 +98,6 @@
                                             </td>
                                             <td>{{Carbon\Carbon::parse($task->due_date)->format('d M, Y') ?? "N/A"}}</td>
                                             <td>{{Carbon\Carbon::parse($task->compliance_date)->format('d M, Y') ?? 'N/A'}}</td>
-                                            <td>{{$task->getClient->name}}</td>
                                             <td>{{$task->getEmployee->name}}</td>
                                             <td>- Entry Creation by {{$task->getAssignedBy->name}} on {{Carbon\Carbon::parse($task->created_at)->format('M d, Y, h:i A')}}<br>
                                             @if($task->getAmendedBy != null) 
