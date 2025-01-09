@@ -9,7 +9,7 @@ use Auth;
 use Illuminate\Http\Request;
 class DashboardController extends Controller{
     public function Dashboard(){
-        $recent_tasks = Task::with('getEmployee')->where('status', 1); 
+        $recent_tasks = Task::with(['getEmployee:id,name', 'getClient:id,name', 'getAssignedBy:id,name', 'getAmendedBy:id,name'])->where('status', 1); 
         $all_task_count = Task::where('status', 1);
         $new_task_count = Task::where('status', 1)->where('current_status', 'new');
         $inprocess_task_count = Task::where('status', 1)->where('current_status', 'in process');

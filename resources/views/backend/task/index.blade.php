@@ -28,41 +28,43 @@
     </div>
 </div> 
 <div class="container-fluid">
-    <div class="card opacityClass" style="border-radius: 10px;  padding: 20px"> 
-        <div class="row" id="addFolderHere">
-            <div class="col-md-12">
-                <!-- -year option code  is start --->
-                <div class="accordion" id="year"> 
-                @foreach($tasks as $year => $months)
-                  <div class="accordion-item"> 
-                  <h2 class="accordion-header">
-                      <button class="accordion-button accordin_btn" type="button" data-bs-toggle="collapse" data-bs-target="#year_{{$year}}" aria-expanded="true" aria-controls="collapseOne">
-                        {{$year}}
-                      </button>
-                    </h2>
-                    <div id="year_{{$year}}" class="accordion-collapse collapse " data-bs-parent="#year">
-                      <div class="accordion-body">
-                        <div class="accordion" id="month_{{$year}}">
-
-                        @foreach($months as $month => $clients)
-                          <div class="accordion-item">
-                            <h2 class="accordion-header">
-                              <button class="accordion-button accordin_btn" type="button" data-bs-toggle="collapse" data-bs-target="#{{$month}}_{{$year}}" aria-expanded="true" aria-controls="collapseOne">
-                                {{$month}}
-                              </button>
-                            </h2>
-                          <div id="{{$month}}_{{$year}}" class="accordion-collapse collapse " data-bs-parent="#month_{{$year}}">
-                            <div class="accordion-body">
-                              <div class="accordion" id="client_{{$year}}_{{$month}}">
-
-                              @foreach ($clients as $clientId => $clientTasks)
+  <div class="card opacityClass" style="border-radius: 10px;  padding: 20px"> 
+    <div class="row" id="addFolderHere">
+      <div class="col-md-12"> 
+        <div class="accordion" id="client"> 
+          @foreach($tasks as $client => $years)
+            <div class="accordion-item"> 
+              <h2 class="accordion-header">
+                <button class="accordion-button accordin_btn" type="button" data-bs-toggle="{{Auth::user()->role_id == 4 ? '':'collapse'}}" data-bs-target="#client_{{$client}}" aria-expanded="true" aria-controls="collapseOne">
+                  @php $client_name = App\Models\User::where('id', $client)->first()->name; @endphp
+                    @if(Auth::user()->role_id == 4)
+                    All Task
+                    @else
+                  {{$client_name}}
+                  @endif
+                </button>
+              </h2>
+              <div id="client_{{$client}}" class="accordion-collapse collapse {{Auth::user()->role_id == 4 ? 'show':''}}" data-bs-parent="#client">  
+                <div class="accordion-body">
+                  <div class="accordion" id="year_{{$client}}">
+                    @foreach($years as $year => $months)
+                      <div class="accordion-item">
+                        <h2 class="accordion-header">
+                          <button class="accordion-button accordin_btn" type="button" data-bs-toggle="collapse" data-bs-target="#client_{{$client}}_{{$year}}" aria-expanded="true" aria-controls="collapseOne">
+                            {{$year}}
+                          </button>
+                        </h2>
+                        <div id="client_{{$client}}_{{$year}}" class="accordion-collapse collapse " data-bs-parent="#year_{{$client}}">
+                          <div class="accordion-body">
+                            <div class="accordion" id="client_{{$client}}_{{$year}}_month"> 
+                              @foreach ($months as $month => $clientTasks)
                                 <div class="accordion-item">
                                   <h2 class="accordion-header">
-                                    <button class="accordion-button accordin_btn" type="button" data-bs-toggle="collapse" data-bs-target="#client_{{$year}}_{{$month}}_{{$clientId}}" aria-expanded="true" aria-controls="collapseOne">
-                                      {{$clientTasks[0]->getClient->name}}
+                                    <button class="accordion-button accordin_btn" type="button" data-bs-toggle="collapse" data-bs-target="#client_{{$client}}_{{$year}}_{{$month}}" aria-expanded="true" aria-controls="collapseOne">
+                                      {{$month}}
                                     </button>
                                   </h2>
-                                  <div id="client_{{$year}}_{{$month}}_{{$clientId}}" class="accordion-collapse collapse " data-bs-parent="#client_{{$year}}_{{$month}}">
+                                  <div id="client_{{$client}}_{{$year}}_{{$month}}" class="accordion-collapse collapse " data-bs-parent="#client_{{$client}}_{{$year}}_month">
                                     <div class="accordion-body">
                                       <div class="table_formate_stayle table-responsive">
                                         <table class="table border">
@@ -80,85 +82,76 @@
                                               <th>Action</th>
                                             </tr>
                                           </thead>
-                                        <tbody>
-                                          @php $sn = 1; @endphp
-                                        @foreach ($clientTasks as $taskIndex => $task)
-                                          <tr id="task_no_{{$task->id}}" class="task_row">
-                                            <td>{{$sn++}}</td>
-                                            <td>{{$task->month}}</td>
-                                            <td>{{Str::limit($task->description, 50)}}</td>
-                                            <td>
-                                            @if($task->current_status == 'pending')
-                                                <b class="badge bg-danger">Pending</b> 
-                                              @elseif($task->current_status == 'inprocess')
-                                                <b class="badge bg-warning">Inprocess</b>
-                                              @else
-                                                <b class="badge bg-success">Completed</b>
-                                              @endif
-                                            </td>
-                                            <td>{{Carbon\Carbon::parse($task->due_date)->format('d M, Y') ?? "N/A"}}</td>
-                                            <td>{{Carbon\Carbon::parse($task->compliance_date)->format('d M, Y') ?? 'N/A'}}</td>
-                                            <td>{{$task->getEmployee->name}}</td>
-                                            <td>- Entry Creation by {{$task->getAssignedBy->name}} on {{Carbon\Carbon::parse($task->created_at)->format('M d, Y, h:i A')}}<br>
-                                            @if($task->getAmendedBy != null) 
-                                            - Modified by {{$task->getAmendedBy?->name}} on {{Carbon\Carbon::parse($task->updated_at)->format('M d, Y, h:i A')}}<br></td>
-                                            @endif
-                                            <td>
-                                                <span>
-                                                  @if($task->reminder_count > 0) 
-                                                  <a href="javascript:void(0)" title="Send Reminder" class="send_reminder_btn" id="reminder_btn_{{$task->id}}" data-id="{{$task->id}}">
-                                                  {{$task->reminder_count}} Reminder Sent
-                                                  </a>
+                                          <tbody>
+                                            @php $sn = 1; @endphp
+                                            @foreach ($clientTasks as $taskIndex => $task)
+                                              <tr id="task_no_{{$task->id}}" class="task_row">
+                                                <td>{{$sn++}}</td>
+                                                <td>{{$task->month}}</td>
+                                                <td>{{Str::limit($task->description, 50)}}</td>
+                                                <td>
+                                                  @if($task->current_status == 'pending')
+                                                    <b class="badge bg-danger">Pending</b> 
+                                                  @elseif($task->current_status == 'inprocess')
+                                                    <b class="badge bg-warning">Inprocess</b>
                                                   @else
-                                                    <a href="javascript:void(0)" title="Send Reminder" class="send_reminder_btn" id="reminder_btn_{{$task->id}}" data-id="{{$task->id}}">
+                                                    <b class="badge bg-success">Completed</b>
+                                                  @endif
+                                                </td>
+                                                <td>{{Carbon\Carbon::parse($task->due_date)->format('d M, Y') ?? "N/A"}}</td>
+                                                <td>{{Carbon\Carbon::parse($task->compliance_date)->format('d M, Y') ?? 'N/A'}}</td>
+                                                <td>{{$task->getEmployee->name}}</td>
+                                                <td>- Entry Creation by {{$task->getAssignedBy->name}} on {{Carbon\Carbon::parse($task->created_at)->format('M d, Y, h:i A')}}<br>
+                                                  @if($task->getAmendedBy != null) 
+                                                  - Modified by {{$task->getAmendedBy?->name}} on {{Carbon\Carbon::parse($task->updated_at)->format('M d, Y, h:i A')}}<br></td>
+                                                  @endif
+                                                <td>
+                                                  <span>
+                                                    @if($task->reminder_count > 0) 
+                                                      <a href="javascript:void(0)" title="Send Reminder" class="send_reminder_btn" id="reminder_btn_{{$task->id}}" data-id="{{$task->id}}">
+                                                        {{$task->reminder_count}} Reminder Sent
+                                                      </a>
+                                                    @else
+                                                      <a href="javascript:void(0)" title="Send Reminder" class="send_reminder_btn" id="reminder_btn_{{$task->id}}" data-id="{{$task->id}}">
                                                         Send Reminder
-                                                    </a>
+                                                      </a>
                                                     @endif
-                                                </span>
-                                            </td>
-                                            <td>
-                                              <div class="delete_icon action_icons">
-                                                <div class="d-flex gap-2" style="max-width: 70px;">
-                                                  <span><a href="{{route('backend.task.edit', [Crypt::encrypt($task->id)])}}" title="Edit"><i class="ri-pencil-line"></i></a></span>
-                                                  <span><a href="{{route('backend.task.view', [Crypt::encrypt($task->id)])}}" title="View"><i class="ri-eye-line"></i></a></span>
-                                                  <span><a href="javascript:void(0)" data-task_id="{{$task->id}}" title="Delete" id="delete_btn"><i class="ri-delete-bin-5-line"></i></a></span>
-                                                </div>
-                                              </div>
-                                            </td> 
-                                          </tr>
-                                          @endforeach
-                                           
-                                        </tbody>
-                                      </table>
+                                                  </span>
+                                                </td>
+                                                <td>
+                                                  <div class="delete_icon action_icons">
+                                                    <div class="d-flex gap-2" style="max-width: 70px;">
+                                                      <span><a href="{{route('backend.task.edit', [Crypt::encrypt($task->id)])}}" title="Edit"><i class="ri-pencil-line"></i></a></span>
+                                                      <span><a href="{{route('backend.task.view', [Crypt::encrypt($task->id)])}}" title="View"><i class="ri-eye-line"></i></a></span>
+                                                      <span><a href="javascript:void(0)" data-task_id="{{$task->id}}" title="Delete" id="delete_btn"><i class="ri-delete-bin-5-line"></i></a></span>
+                                                    </div>
+                                                  </div>
+                                                </td> 
+                                              </tr>
+                                            @endforeach
+                                          </tbody>
+                                        </table>
+                                      </div>
                                     </div>
                                   </div>
                                 </div>
-                              </div>
-                               
                               @endforeach
-                               
                             </div>
                           </div>
                         </div>
                       </div>
-                      @endforeach
-
-
-                       
-                           
-                          </div>
-                        </div>
-                      </div>
-                    </div>
                     @endforeach
                   </div>
-                <!---year option code is end --->
+                </div> 
+              </div>
+            </div>
+          @endforeach
         </div>
+      </div>
     </div>
+  </div>
 </div>
-
- 
-
+      
 @section('javascript_section')
 @if(Session::has('assigned'))
 <script>

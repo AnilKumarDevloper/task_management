@@ -64,19 +64,18 @@ class TaskController extends Controller{
         }
     }
     public function index(Request $request){
-       $tasks = Task::select('*')
-    ->with(['getEmployee:id,name', 'getClient:id,name', 'getAssignedBy:id,name', 'getAmendedBy:id,name'])
-    ->orderBy('year', 'desc')
-    ->get()
-    ->groupBy('year')
-    ->map(function ($yearGroup) {
-        return $yearGroup->groupBy('month')->map(function ($monthGroup) {
-            return $monthGroup->groupBy('client_id');
-        });
-    });
- 
-    // return $tasks;
- 
+        $tasks = Task::select('*')->with(['getEmployee:id,name', 'getClient:id,name', 'getAssignedBy:id,name', 'getAmendedBy:id,name']);
+        if(Auth::user()->role_id == 4){
+            $tasks = $tasks->where('client_id', Auth::user()->id);
+        } 
+        $tasks = $tasks->orderBy('year', 'desc')
+        ->get()
+        ->groupBy('client_id')
+        ->map(function ($clientGroup){
+            return $clientGroup->groupBy('year')->map(function ($yearGroup){
+                return $yearGroup->groupBy('month');
+            });
+        }); 
         return view('backend.task.index', compact('tasks'));
     }
     // to assign task from folder (not in use now) start
