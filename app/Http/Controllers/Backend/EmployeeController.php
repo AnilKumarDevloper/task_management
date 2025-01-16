@@ -13,7 +13,7 @@ use Illuminate\Validation\Rules;
     
 class EmployeeController extends Controller{
     public function index(Request $request){
-        if(Auth::user()->role_id == 1 || Auth::user()->role_id == 2){ 
+        if(Auth::user()->role_id == 1 || Auth::user()->role_id == 2){
             $search = $request->search; 
             $users = User::with('getClient')->where('role_id', 3)
             ->where('status', 1);
@@ -25,7 +25,7 @@ class EmployeeController extends Controller{
                 });
             }
             $users = $users->withTrashed()->orderBy('id', 'desc')
-           ->paginate(2); 
+           ->paginate(10); 
             $users->appends([ 
             'search' => isset($_GET['search']) ? $_GET['search'] : '',
             ]);
@@ -43,7 +43,7 @@ class EmployeeController extends Controller{
             return response()->view('errors.403', [], 403);
         }
     }
-    public function store(Request $request){
+    public function store(Request $request){ 
         $request->validate([
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:'.User::class],
@@ -63,15 +63,15 @@ class EmployeeController extends Controller{
         if($request->clients != ''){
             $clientIdsAsStrings = $request->input('clients');  
             $clientIdsAsIntegers = array_map('intval', $clientIdsAsStrings); 
-            // User::where('id', $user->id)->update([
-            //     "clients" => $clientIdsAsIntegers
-            // ]);
-            // foreach($clientIdsAsIntegers as $client){
-            //     EmployeeAndClient::create([
-            //         "user_id" => $user->id,
-            //         "client_id" => $client
-            //     ]);
-            // }
+            User::where('id', $user->id)->update([
+                "clients" => $clientIdsAsIntegers
+            ]);
+            foreach($clientIdsAsIntegers as $client){
+                EmployeeAndClient::create([
+                    "user_id" => $user->id,
+                    "client_id" => $client
+                ]);
+            }
         } 
         return redirect()->route('backend.employee.index')->with('created', 'Employee has been Added.');
     }
@@ -84,10 +84,11 @@ class EmployeeController extends Controller{
                 |---------------------------------------------------------------------------------------------------------
                 | this will be usefull when multiple client assigned to a employee
                 |---------------------------------------------------------------------------------------------------------
-                | $assigned_clients = EmployeeAndClient::where('user_id', $decrypt_id)->pluck('client_id')->toArray();
                 */
+                $assigned_clients = EmployeeAndClient::where('user_id', $decrypt_id)->pluck('client_id')->toArray();
                 $clients = User::where('role_id', 4)->where('status', 1)->get();
-                return view('backend.employee.edit', compact('user', 'clients')); 
+                
+                return view('backend.employee.edit', compact('user', 'clients', 'assigned_clients')); 
             }catch(\Exception $e){
                 abort('404');
             }
@@ -102,28 +103,32 @@ class EmployeeController extends Controller{
             'phone' => ['required', 'digits:10'],
         ]);
         $decrypt_id = Crypt::decrypt($id);   
+
         User::where('id', $decrypt_id)->update([
             "name" => $request->name,
             "email" => $request->email,
             "phone" => $request->phone,
-            "client_id" => $request->client
+            // "client_id" => $request->client
         ]);
         /*
         |---------------------------------------------------------------------------------------------------------
         | this is usefull when we are assigning multiple client to a employee
         |---------------------------------------------------------------------------------------------------------
-        |if($request->clients != ''){
-        |    $clientIdsAsStrings = $request->input('clients'); 
-        |    $clientIdsAsIntegers = array_map('intval', $clientIdsAsStrings); 
-        |    EmployeeAndClient::where('user_id', $decrypt_id)->delete();
-        |    foreach($clientIdsAsIntegers as $client){
-        |        EmployeeAndClient::create([
-        |            "user_id" => $decrypt_id,
-        |            "client_id" => $client
-        |        ]);
-        |    }
-        |}
         */
+        if($request->clients != ''){
+              $clientIdsAsStrings = $request->input('clients'); 
+              $clientIdsAsIntegers = array_map('intval', $clientIdsAsStrings); 
+              User::where('id', $decrypt_id)->update([
+                "clients" => $clientIdsAsIntegers
+            ]);
+              EmployeeAndClient::where('user_id', $decrypt_id)->delete();
+              foreach($clientIdsAsIntegers as $client){
+                  EmployeeAndClient::create([
+                      "user_id" => $decrypt_id,
+                      "client_id" => $client
+                  ]);
+              }
+          }
         return redirect()->route('backend.employee.index')->with('updated', 'Employee has been updated.');
     }
     public function destroy($id){

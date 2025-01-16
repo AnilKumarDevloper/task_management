@@ -36,11 +36,13 @@
             <div class="accordion-item"> 
               <h2 class="accordion-header">
                 <button class="accordion-button accordin_btn" type="button" data-bs-toggle="{{Auth::user()->role_id == 4 ? '':'collapse'}}" data-bs-target="#client_{{$client}}" aria-expanded="true" aria-controls="collapseOne">
-                  @php $client_name = App\Models\User::where('id', $client)->first()->name; @endphp
+                  @php $client_name = App\Models\User::where('id', $client)->first()->name;
+                  $company_name = App\Models\Backend\CompanyDetail::where('user_id', $client)->first()->name; @endphp
                     @if(Auth::user()->role_id == 4)
                     All Task
                     @else
-                  {{$client_name}}
+                  <!-- {{$client_name}} -->
+                  {{$company_name}}
                   @endif
                 </button>
               </h2>

@@ -67,7 +67,14 @@ class TaskController extends Controller{
         $tasks = Task::select('*')->with(['getEmployee:id,name', 'getClient:id,name', 'getAssignedBy:id,name', 'getAmendedBy:id,name']);
         if(Auth::user()->role_id == 4){
             $tasks = $tasks->where('client_id', Auth::user()->id);
-        } 
+        }
+        elseif(Auth::user()->role_id == 3){
+            if(Auth::user()->clients != ''){ 
+                $tasks = $tasks->whereIn('client_id', Auth::user()->clients);
+            }else{ 
+                $tasks = $tasks->where('client_id', Auth::user()->client_id);
+            }
+        }
         $tasks = $tasks->orderBy('year', 'desc')
         ->get()
         ->groupBy('client_id')

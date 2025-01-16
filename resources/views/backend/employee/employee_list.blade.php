@@ -7,7 +7,7 @@
                 <ol class="breadcrumb mb-0 d-flex align-items-center">
                   <li class="breadcrumb-item"><a href="{{route('backend.dashboard.view')}}" class="link"><i class="ri-home-3-line fs-5"></i></a></li>
                   <li class="breadcrumb-item" aria-current="page"><a href="javascript:void(0)" class="link">Employee Management</a></li>
-                 </ol>
+                </ol>
             </nav>
             <h1 class="mb-0 fw-bold text-white">Employee Management</h1>
         </div>
@@ -37,9 +37,6 @@
            <div>
                 <a href="{{route('backend.employee.index')}}" class="clear btn btn-danger " > Clear</a>
            </div>
-               
-           
-           
         </div>
     </div>
     <!---search box  end--->
@@ -69,8 +66,8 @@
 
                         <th style="width: 0px;" class="sorting" tabindex="0" aria-controls="zero_config" rowspan="1"
                             colspan="1" aria-label="Action: activate to sort column ascending"> Email</th>
-                        <th style="width: 0px;" class="sorting" tabindex="0" aria-controls="zero_config" rowspan="1"
-                            colspan="1" aria-label="Action: activate to sort column ascending"> Client</th>
+                        <!-- <th style="width: 0px;" class="sorting" tabindex="0" aria-controls="zero_config" rowspan="1"
+                            colspan="1" aria-label="Action: activate to sort column ascending"> Client</th> -->
                         <th style="width:0px;" class="sorting" tabindex="0" aria-controls="zero_config" rowspan="1"
                             colspan="1" aria-label="Action: activate to sort column ascending"> Status</th>
                         <th style="width: 50px" class="sorting" tabindex="0" aria-controls="zero_config" rowspan="1"
@@ -84,7 +81,7 @@
                         <td>{{$user->name}}</td>
                         <td>{{$user->phone}}</td>
                         <td>{{$user->email}}</td>
-                        <td>{{$user->getClient?->name}}</td>
+                        <!-- <td>{{$user->getClient?->name}}</td> -->
                         <td>
                             <div class="form-check form-switch">
                                 <input class="form-check-input" type="checkbox" id="status" style="width:40px"

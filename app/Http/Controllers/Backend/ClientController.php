@@ -22,9 +22,9 @@ class ClientController extends Controller{
     public function index(){
         $users = User::with('GetCompanyDetail')->where('role_id',4);
         if(Auth::user()->role_id == 3){
-            // $clients = EmployeeAndClient::where('user_id', Auth::user()->id)->pluck('client_id')->toArray();
-            // $users = $users->whereIn('id', $clients);
-            $users = $users->where('id', Auth::user()->client_id);
+            $clients = EmployeeAndClient::where('user_id', Auth::user()->id)->pluck('client_id')->toArray();
+            $users = $users->whereIn('id', $clients);
+            // $users = $users->where('id', Auth::user()->client_id);
         } 
         $users = $users->where('status', 1)->withTrashed()->orderBy('id', 'desc')->get();
         return view('backend.client.index', compact('users'));

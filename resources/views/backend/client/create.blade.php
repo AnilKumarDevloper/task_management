@@ -26,7 +26,7 @@
                     <div class="col-md-4 mt-4">
                         <label class="control-label">Company Name</label>
                         <input class="form-control form-white input_border" name="company_name" placeholder="Company Name"
-                            type="text" value="{{old('company_name')}}" oninput="capitalizeEachWord(this)">
+                            type="text" value="{{old('company_name')}}">
                         @error('company_name')
                             <p style="color:red;">{{$message}}</p>
                         @enderror
