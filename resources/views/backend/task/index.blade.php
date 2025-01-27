@@ -70,9 +70,9 @@
                                     <div class="accordion-body">
                                       <div class="table_formate_stayle table-responsive">
                                       @php
-                                        $view = App\Models\Backend\authorityMatrix::where('user_id', Auth::user()->id)->where('permission', 'view')->exists();
-                                        $edit = App\Models\Backend\authorityMatrix::where('user_id', Auth::user()->id)->where('permission', 'edit')->exists();
-                                        $delete = App\Models\Backend\authorityMatrix::where('user_id', Auth::user()->id)->where('permission', 'delete')->exists();
+                                        $view = App\Models\Backend\AuthorityMatrix::where('user_id', Auth::user()->id)->where('permission', 'view')->exists();
+                                        $edit = App\Models\Backend\AuthorityMatrix::where('user_id', Auth::user()->id)->where('permission', 'edit')->exists();
+                                        $delete = App\Models\Backend\AuthorityMatrix::where('user_id', Auth::user()->id)->where('permission', 'delete')->exists();
                                       @endphp
 
                                         <table class="table border">
@@ -144,11 +144,11 @@
                                                      
 
                                                       @if($view)
-                                                      <span><a href="{{route('backend.task.edit', [Crypt::encrypt($task->id)])}}" title="Edit"><i class="ri-pencil-line"></i></a></span>
-                                                      @endif
-
-                                                      @if($edit)
                                                       <span><a href="{{route('backend.task.view', [Crypt::encrypt($task->id)])}}" title="View"><i class="ri-eye-line"></i></a></span>
+                                                      @endif  
+                                                      
+                                                      @if($edit)
+                                                      <span><a href="{{route('backend.task.edit', [Crypt::encrypt($task->id)])}}" title="Edit"><i class="ri-pencil-line"></i></a></span>
                                                       @endif
 
                                                       @if($delete)
