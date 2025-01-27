@@ -34,7 +34,7 @@
                                 <select class="form-control" name="client" id="client" style="background: white;" required>
                                     <option value="">--Select--</option>
                                     @foreach($clients as $client)
-                                        <option value="{{$client->id}}">{{$client->name}}</option>
+                                        <option value="{{$client->id}}">{{$client->getCompanyDetail->name}}</option>
                                     @endforeach
                                 </select>
                                 @error('client')
@@ -42,17 +42,17 @@
                                 @enderror
                             </div>
                 
-                            <div class="col-md-4 mt-4">
+                            <!-- <div class="col-md-4 mt-4">
                                 <label class="control-label">Employee Name</label>
                                 <input type="text" class="form-control" id="employee_name" disabled>
-                            </div>
+                            </div> -->
                 
-                            <div class="col-md-4 mt-4" style="display:none;">
+                            <div class="col-md-4 mt-4">
                                 <label class="control-label">Select Employee</label>
                                 <select class="form-control" name="employee" id="employee" style="background: white;" required>
                                     <option value="">--Select--</option>
                                 </select>
-                                @error('client')
+                                @error('employee')
                                     <p style="color:red;">{{ $message }}</p>
                                 @enderror
                             </div>
@@ -143,18 +143,18 @@
     </div> 
 
 @section('javascript_section')
-    <script> 
-
+    <script>  
             $(document).on("change", "#client", async function(){
                 $("#employee").empty(); 
-                let client_id = $(this).val();
-                console.log(client_id);
+                let client_id = $(this).val(); 
                 let url = "{{route('api.get_employee')}}";  
                 let response = await fetch(`${url}?client_id=${client_id}`);
-                let responseData = await response.json(); 
-                console.log(responseData); 
-                $("#employee_name").val(responseData.employee.name);
-                $("#employee").append(`<option value="${responseData.employee.id}">${responseData.employee.name}</option>`); 
+                let responseData = await response.json();
+                console.log(responseData);
+                responseData.employee.forEach(element => {
+                    $("#employee").append(`<option value="${element.id}">${element.name}</option>`); 
+                });
+                // $("#employee_name").val(responseData.employee.name);
             });
 
 

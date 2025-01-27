@@ -15,7 +15,7 @@ class EmployeeController extends Controller{
     public function index(Request $request){
         if(Auth::user()->role_id == 1 || Auth::user()->role_id == 2){
             $search = $request->search; 
-            $users = User::with('getClient')->where('role_id', 3)
+            $users = User::with(['getEmployeeAndClient'])->where('role_id', 3)
             ->where('status', 1);
             if (!empty($search)) {
                 $users = $users->where(function ($query) use ($search) {
@@ -37,7 +37,7 @@ class EmployeeController extends Controller{
     }
     public function create(){
         if(Auth::user()->role_id == 1 || Auth::user()->role_id == 2){
-            $clients = User::where('role_id', 4)->where('status', 1)->get();
+            $clients = User::with('getCompanyDetail')->where('role_id', 4)->where('status', 1)->get();
             return view('backend.employee.create', compact('clients'));
         }else{ 
             return response()->view('errors.403', [], 403);
@@ -86,10 +86,11 @@ class EmployeeController extends Controller{
                 |---------------------------------------------------------------------------------------------------------
                 */
                 $assigned_clients = EmployeeAndClient::where('user_id', $decrypt_id)->pluck('client_id')->toArray();
-                $clients = User::where('role_id', 4)->where('status', 1)->get();
+                $clients = User::with('getCompanyDetail')->where('role_id', 4)->where('status', 1)->get();
                 
                 return view('backend.employee.edit', compact('user', 'clients', 'assigned_clients')); 
             }catch(\Exception $e){
+                return $e->getMessage();
                 abort('404');
             }
         }else{

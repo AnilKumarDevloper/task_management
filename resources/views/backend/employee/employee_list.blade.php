@@ -13,10 +13,7 @@
         </div>
         @if(Auth::user()->role_id == 1 || Auth::user()->role_id == 2)
         <div class="col-lg-4 col-md-6 d-none d-md-flex align-items-center justify-content-end">
-            <a href="{{route('backend.employee.create')}}"
-                class="btn d-flex align-items-center justify-content-center d-block w-100 btn-info waves-effect waves-light">
-                <i class="ri-add-line fs-6 me-2"></i> Add Employee
-            </a>
+            <a href="{{route('backend.employee.create')}}" class="btn d-flex align-items-center justify-content-center d-block w-100 btn-info waves-effect waves-light"><i class="ri-add-line fs-6 me-2"></i> Add Employee</a>
         </div>
         @endif 
     </div>
@@ -52,26 +49,13 @@
                 role="grid" aria-describedby="zero_config_info">
                 <thead>
                     <tr role="row">
-                        <th class="sorting_asc" tabindex="0" aria-controls="zero_config" rowspan="1" colspan="1"
-                            aria-sort="ascending" aria-label="SN: activate to sort column descending"
-                            style="width: 0px;">SN</th>
-
-                        <th class="sorting" tabindex="0" aria-controls="zero_config" rowspan="1" colspan="1"
-                            aria-label="Department Name: activate to sort column ascending" style="width: 0px;">Name
-                        </th>
-
-                        <th style="width: 0px;" class="sorting" tabindex="0" aria-controls="zero_config" rowspan="1"
-                            colspan="1" aria-label="Action: activate to sort column ascending">Phone</th>
-
-
-                        <th style="width: 0px;" class="sorting" tabindex="0" aria-controls="zero_config" rowspan="1"
-                            colspan="1" aria-label="Action: activate to sort column ascending"> Email</th>
-                        <!-- <th style="width: 0px;" class="sorting" tabindex="0" aria-controls="zero_config" rowspan="1"
-                            colspan="1" aria-label="Action: activate to sort column ascending"> Client</th> -->
-                        <th style="width:0px;" class="sorting" tabindex="0" aria-controls="zero_config" rowspan="1"
-                            colspan="1" aria-label="Action: activate to sort column ascending"> Status</th>
-                        <th style="width: 50px" class="sorting" tabindex="0" aria-controls="zero_config" rowspan="1"
-                            colspan="1" aria-label="Action: activate to sort column ascending">Action</th>
+                        <th class="sorting_asc" tabindex="0" aria-controls="zero_config" rowspan="1" colspan="1" aria-sort="ascending" aria-label="SN: activate to sort column descending" style="width: 0px;">SN</th>
+                        <th class="sorting" tabindex="0" aria-controls="zero_config" rowspan="1" colspan="1" aria-label="Department Name: activate to sort column ascending" style="width: 0px;">Name</th>
+                        <th style="width: 0px;" class="sorting" tabindex="0" aria-controls="zero_config" rowspan="1" colspan="1" aria-label="Action: activate to sort column ascending">Phone</th>
+                        <th style="width: 0px;" class="sorting" tabindex="0" aria-controls="zero_config" rowspan="1" colspan="1" aria-label="Action: activate to sort column ascending"> Email</th>
+                        <th style="width: 0px;" class="sorting" tabindex="0" aria-controls="zero_config" rowspan="1" colspan="1" aria-label="Action: activate to sort column ascending"> Client</th>
+                        <th style="width:0px;" class="sorting" tabindex="0" aria-controls="zero_config" rowspan="1" colspan="1" aria-label="Action: activate to sort column ascending"> Status</th>
+                        <th style="width: 50px" class="sorting" tabindex="0" aria-controls="zero_config" rowspan="1" colspan="1" aria-label="Action: activate to sort column ascending">Action</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -81,7 +65,22 @@
                         <td>{{$user->name}}</td>
                         <td>{{$user->phone}}</td>
                         <td>{{$user->email}}</td>
-                        <!-- <td>{{$user->getClient?->name}}</td> -->
+                        <td>
+                            @if($user->clients != '')
+                            @php
+                            $clients = App\Models\User::whereIn('id', $user->clients)->get();
+                            @endphp
+                            @foreach($clients as $index => $client)
+                                <a href="{{route('backend.client.view', [Crypt::encrypt($client->id)])}}">{{$client->name}}</a>
+                                @if($index != count($clients)-1)
+                                    |
+                                @endif
+                            @endforeach 
+                            @else
+                            No Client Assigned
+                            @endif
+                          
+                        </td>
                         <td>
                             <div class="form-check form-switch">
                                 <input class="form-check-input" type="checkbox" id="status" style="width:40px"

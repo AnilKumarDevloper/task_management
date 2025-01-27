@@ -108,7 +108,7 @@
                                         colspan="1" aria-label="Action: activate to sort column ascending">Compliance Date</th>
                                     <!-- <th style="width: 0px;" class="sorting" tabindex="0" aria-controls="zero_config" rowspan="1" colspan="1" aria-label="Action: activate to sort column ascending">Document</th> -->
                                     <th style="width: 0px;" class="sorting text-dark" tabindex="0" aria-controls="zero_config" rowspan="1"
-                                        colspan="1" aria-label="Action: activate to sort column ascending">Client</th>
+                                        colspan="1" aria-label="Action: activate to sort column ascending">Client Name</th>
                                         <th style="width: 0px;" class="sorting text-dark" tabindex="0" aria-controls="zero_config" rowspan="1"
                                         colspan="1" aria-label="Action: activate to sort column ascending">Responsibility</th>
                                     <th style="width: 0px;" class="sorting text-dark" tabindex="0" aria-controls="zero_config" rowspan="1"

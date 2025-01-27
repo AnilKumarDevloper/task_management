@@ -101,7 +101,7 @@
                         <select class="select2 form-control select2-hidden-accessible focusBorder" multiple=""
                             style="height: 34px; width: 100%;" data-select2-id="13" tabindex="-1" aria-hidden="true" name="clients[]">
                             @foreach($clients as $client)
-                            <option value="{{$client->id}}" data-select2-id="{{$client->id}}">{{$client->name}}</option>
+                            <option value="{{$client->id}}" data-select2-id="{{$client->id}}">{{$client->getCompanyDetail->name}}</option>
                             @endforeach
 
                         </select>

@@ -94,10 +94,10 @@ class ApiController extends Controller{
             "client_id" => ["required"]
         ]);
         try{
-            $employee = User::where('client_id', $request->client_id)->first();
+            $employee = User::whereJsonContains('clients', (int)$request->client_id)->get();
             return response()->json([
                 "status" => "success",
-                "employee" => $employee
+                "employee" => $employee, 
             ]);
         }catch(\Exception $e){
             return response()->json([
@@ -105,5 +105,5 @@ class ApiController extends Controller{
                 "error" => $e->getMessage()
             ]);
         }
-    }  
+    }
 }

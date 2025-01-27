@@ -349,10 +349,10 @@ class TaskController extends Controller{
             $employees = $employees->where('id', Auth::user()->id);
         }
         $employees = $employees->get();
-        $clients = User::with('getEmployeeAndClient')->where('role_id', 4)->get();
+        $clients = User::with(['getEmployeeAndClient', 'getCompanyDetail'])->where('role_id', 4)->get();
         if(Auth::user()->role_id == 3){
             $clients = $clients->where('id', Auth::user()->client_id);
-        } 
+        }  
         $financial_years = FinancialYearList::where('status', 1)->get();
         return view('backend.task.assign_task', compact('employees',
          'financial_years', 'clients'));
@@ -415,7 +415,6 @@ class TaskController extends Controller{
     public function taskExportCSV($client_id, $year, $month){
         return Excel::download(new TaskExport($client_id, $year, $month), 'task-list.csv');
     }
-
 
     public function taskImportCSV(Request $request, $client_id){
         $request->validate([

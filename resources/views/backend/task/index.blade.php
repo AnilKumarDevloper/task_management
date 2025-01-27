@@ -69,6 +69,12 @@
                                   <div id="client_{{$client}}_{{$year}}_{{$month}}" class="accordion-collapse collapse " data-bs-parent="#client_{{$client}}_{{$year}}_month">
                                     <div class="accordion-body">
                                       <div class="table_formate_stayle table-responsive">
+                                      @php
+                                        $view = App\Models\Backend\authorityMatrix::where('user_id', Auth::user()->id)->where('permission', 'view')->exists();
+                                        $edit = App\Models\Backend\authorityMatrix::where('user_id', Auth::user()->id)->where('permission', 'edit')->exists();
+                                        $delete = App\Models\Backend\authorityMatrix::where('user_id', Auth::user()->id)->where('permission', 'delete')->exists();
+                                      @endphp
+
                                         <table class="table border">
                                           <thead>
                                             <tr>
@@ -81,7 +87,15 @@
                                               <th>Responsibility</th>
                                               <th style="min-width:370px;">Edit Trail</th>
                                               <th width="120px">Reminder</th>
-                                              <th>Action</th>
+
+                                              @if(Auth::user()->role_id == 4)
+                                                @if($view || $edit || $delete)
+                                                  <th>Action</th>
+                                                @endif
+                                              @else
+                                                <th>Action</th>
+                                              @endif
+
                                             </tr>
                                           </thead>
                                           <tbody>
@@ -90,7 +104,7 @@
                                               <tr id="task_no_{{$task->id}}" class="task_row">
                                                 <td>{{$sn++}}</td>
                                                 <td>{{$task->month}}</td>
-                                                <td>{{Str::limit($task->description, 50)}}</td>
+                                                <td>{{Str::limit($task->title, 50)}}</td>
                                                 <td>
                                                   @if($task->current_status == 'pending')
                                                     <b class="badge bg-danger">Pending</b> 
@@ -120,15 +134,38 @@
                                                     @endif
                                                   </span>
                                                 </td>
+
+
                                                 <td>
                                                   <div class="delete_icon action_icons">
                                                     <div class="d-flex gap-2" style="max-width: 70px;">
+                                                      
+                                                      @if(Auth::user()->role_id == 4)
+                                                     
+
+                                                      @if($view)
+                                                      <span><a href="{{route('backend.task.edit', [Crypt::encrypt($task->id)])}}" title="Edit"><i class="ri-pencil-line"></i></a></span>
+                                                      @endif
+
+                                                      @if($edit)
+                                                      <span><a href="{{route('backend.task.view', [Crypt::encrypt($task->id)])}}" title="View"><i class="ri-eye-line"></i></a></span>
+                                                      @endif
+
+                                                      @if($delete)
+                                                      <span><a href="javascript:void(0)" data-task_id="{{$task->id}}" title="Delete" id="delete_btn"><i class="ri-delete-bin-5-line"></i></a></span>
+                                                      @endif
+
+                                                      @else
                                                       <span><a href="{{route('backend.task.edit', [Crypt::encrypt($task->id)])}}" title="Edit"><i class="ri-pencil-line"></i></a></span>
                                                       <span><a href="{{route('backend.task.view', [Crypt::encrypt($task->id)])}}" title="View"><i class="ri-eye-line"></i></a></span>
                                                       <span><a href="javascript:void(0)" data-task_id="{{$task->id}}" title="Delete" id="delete_btn"><i class="ri-delete-bin-5-line"></i></a></span>
+                                                      @endif
+
                                                     </div>
                                                   </div>
                                                 </td> 
+
+
                                               </tr>
                                             @endforeach
                                           </tbody>

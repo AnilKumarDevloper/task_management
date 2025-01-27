@@ -63,7 +63,7 @@ class User extends Authenticatable
 
   
     public function getEmployeeAndClient(){
-        return $this->hasMany(EmployeeAndClient::class, 'user_id');
+        return $this->hasMany(EmployeeAndClient::class, 'user_id')->with('getClient');
     }
 
     public function getClient(){
