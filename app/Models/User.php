@@ -6,6 +6,7 @@ namespace App\Models;
 use App\Models\Backend\AuthorityMatrix;
 use App\Models\Backend\CompanyDetail;
 use App\Models\Backend\EmployeeAndClient;
+use App\Models\Backend\Task;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -72,6 +73,10 @@ class User extends Authenticatable
 
     public function getAuthorityMatrix(){
         return $this->hasMany(AuthorityMatrix::class, 'user_id');
+    }
+
+    public function getEmployeeTask(){
+        return $this->hasMany(Task::class, 'assigned_to');
     }
      
 

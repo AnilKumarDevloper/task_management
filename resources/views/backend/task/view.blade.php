@@ -36,12 +36,12 @@
 
                                     <div class="row"> 
                                     <div class="col-md-6 mt-3">
-                                    <lable>Start Date</lable>
-                                        <input type="text" class="form-control" disabled value="{{Carbon\Carbon::parse($task->start_date)->format('d M, Y')}}"/>
+                                    <lable>Due Date</lable>
+                                        <input type="text" class="form-control" disabled value="{{Carbon\Carbon::parse($task->due_date)->format('d M, Y')}}"/>
                                     </div>  
                                     <div class="col-md-6 mt-3">
-                                    <lable>End Date</lable>
-                                        <input type="text" class="form-control" disabled value="{{Carbon\Carbon::parse($task->end_date)->format('d M, Y')}}"/>
+                                    <lable>Compliance Date</lable>
+                                        <input type="text" class="form-control" disabled value="{{$task->compliance_date != '' ? Carbon\Carbon::parse($task->compliance_date)->format('d M, Y') : 'N/A'}}"/>
                                     </div>  
                                 </div>
                                 <br>

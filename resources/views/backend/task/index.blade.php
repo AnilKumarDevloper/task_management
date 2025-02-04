@@ -31,18 +31,21 @@
   <div class="card opacityClass" style="border-radius: 10px;  padding: 20px"> 
     <div class="row" id="addFolderHere">
       <div class="col-md-12"> 
-        <div class="accordion" id="client"> 
+        @if(count($tasks) > 0) 
+        <div class="accordion" id="client">  
           @foreach($tasks as $client => $years)
             <div class="accordion-item"> 
               <h2 class="accordion-header">
                 <button class="accordion-button accordin_btn" type="button" data-bs-toggle="{{Auth::user()->role_id == 4 ? '':'collapse'}}" data-bs-target="#client_{{$client}}" aria-expanded="true" aria-controls="collapseOne">
-                  @php $client_name = App\Models\User::where('id', $client)->first()->name;
-                  $company_name = App\Models\Backend\CompanyDetail::where('user_id', $client)->first()->name; @endphp
-                    @if(Auth::user()->role_id == 4)
+                  @php $client_name = App\Models\User::withTrashed()->where('id', $client)->first()->name;
+                  $company_name = App\Models\Backend\CompanyDetail::where('user_id', $client)->first()->name;
+                  $total_task = App\Models\Backend\Task::where('client_id', $client)->count();
+                   @endphp
+                   @if(Auth::user()->role_id == 4)
                     All Task
                     @else
                   <!-- {{$client_name}} -->
-                  {{$company_name}}
+                  {{$company_name}} 
                   @endif
                 </button>
               </h2>
@@ -141,8 +144,6 @@
                                                     <div class="d-flex gap-2" style="max-width: 70px;">
                                                       
                                                       @if(Auth::user()->role_id == 4)
-                                                     
-
                                                       @if($view)
                                                       <span><a href="{{route('backend.task.view', [Crypt::encrypt($task->id)])}}" title="View"><i class="ri-eye-line"></i></a></span>
                                                       @endif  
@@ -159,8 +160,7 @@
                                                       <span><a href="{{route('backend.task.edit', [Crypt::encrypt($task->id)])}}" title="Edit"><i class="ri-pencil-line"></i></a></span>
                                                       <span><a href="{{route('backend.task.view', [Crypt::encrypt($task->id)])}}" title="View"><i class="ri-eye-line"></i></a></span>
                                                       <span><a href="javascript:void(0)" data-task_id="{{$task->id}}" title="Delete" id="delete_btn"><i class="ri-delete-bin-5-line"></i></a></span>
-                                                      @endif
-
+                                                      @endif 
                                                     </div>
                                                   </div>
                                                 </td> 
@@ -184,8 +184,11 @@
                 </div> 
               </div>
             </div>
-          @endforeach
+          @endforeach 
         </div>
+      @else
+        <center><h3>No Task Available</h3></center>
+        @endif 
       </div>
     </div>
   </div>

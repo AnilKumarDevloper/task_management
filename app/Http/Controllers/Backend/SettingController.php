@@ -50,6 +50,10 @@ class SettingController extends Controller
             "logo_text" => $request->change_logo_heading_name,
             "logo_sub_heading_text" => $request->change_sub_logo_heading_name,
             "footer_text" => $request->copy_right_text,
+            "menu_text_color" => $request->menu_text_color,
+            "submenu_text_color" => $request->submenu_text_color,
+            "user_name_text_color" => $request->user_name_text_color,
+            "notification_icon_color" => $request->notification_icon_color,
         ]);
         
         return redirect()->back()->with('new_updated', 'Layout setting has been updated.');
@@ -61,12 +65,21 @@ class SettingController extends Controller
                 "navbar_color" => "#fafafa",
                 "sidebar_color" => "#f2f2f2",
                 "logo_text_color" => "#195e90",
-                "footer_text_color" => "#ffdbdb",
+                "footer_text_color" => "#ffffff",
                 "logo_sub_heading_color" => "#9e7400", 
                 "logo_text" => "NDM Advisors LLP",
                 "logo_sub_heading_text" => "Secretarial Compliance Management (SCM)",
                 "footer_text" => "Copyright 2024, Secretarial Compliance Management (SCM) is a proprietory tool and all Rights reserved with NDM Advisors LLP",
-            ]);
+                "menu_text_color" => "#616161",
+                "user_name_text_color" => "#616161",
+                "notification_icon_color" => "#616161",
+                'bg_image' => "default_bg.jpg",
+                'bg_image_path' => "layout/bg_image",
+                'bg_image_original_name' => "default_bg.jpg",
+                'logo_image' => "default_logo.png",
+                'logo_image_path' => "layout/site_logo",
+                'logo_image_original_name' => "default_logo.png"
+            ]); 
             return redirect()->back()->with('default_updated', 'Default Layout setting has been updated.');
         }catch(\Exception $e){
             return $e->getMessage();

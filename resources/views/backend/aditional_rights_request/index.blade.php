@@ -33,10 +33,10 @@
           <!---search box  end--->
         <div class="row">
             <div class="col-sm-12 table_formate_stayle_font overflowbox">
-                <table id="zero_config" class="table table-striped table-bordered text-nowrap dataTable no-footer"
+                <table id="additional_rights_table" class="table table-striped table-bordered text-nowrap dataTable no-footer"
                     role="grid" aria-describedby="zero_config_info">
                     <thead>
-                        <tr role="row">
+                        <tr role="row" class="subHeaderTable">
                             <th class="sorting_asc text-dark" tabindex="0" aria-controls="zero_config" rowspan="1"
                                 colspan="1" aria-sort="ascending" aria-label="SN: activate to sort column descending"
                                 style="width: 0px;">SN
@@ -87,12 +87,17 @@
                         @endforeach
                     </tbody>
                 </table>
-                {{$right_requests->links('pagination::bootstrap-5')}}
+   
             </div>
         </div>
     </div>
 </div> 
 @section('javascript_section')  
+<script>
+          $(document).ready(function() {
+            $('#additional_rights_table').DataTable();
+        });
+</script>
 @endsection
 
 @endsection

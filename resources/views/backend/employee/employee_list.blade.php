@@ -21,7 +21,7 @@
 <div class="container-fluid">
 <div class="card opacityClass" style="border-radius: 10px;  padding: 20px">
     <!---search box --->
-    <div class="col-12 mb-3">
+    <!-- <div class="col-12 mb-3">
         <div class="form-group d-flex justify-content-end gap-1">
            <form method="GET" action="{{route('backend.employee.index')}}"  >
                 <div class="d-flex gap-2">
@@ -35,7 +35,7 @@
                 <a href="{{route('backend.employee.index')}}" class="clear btn btn-danger " > Clear</a>
            </div>
         </div>
-    </div>
+    </div> -->
     <!---search box  end--->
     @php
      $sn = ($users->currentPage() - 1) * $users->perPage() + 1;
@@ -48,12 +48,13 @@
             <table id="zero_config" class="table table-striped table-bordered text-nowrap dataTable no-footer"
                 role="grid" aria-describedby="zero_config_info">
                 <thead>
-                    <tr role="row">
+                    <tr role="row" class="subHeaderTable">
                         <th class="sorting_asc" tabindex="0" aria-controls="zero_config" rowspan="1" colspan="1" aria-sort="ascending" aria-label="SN: activate to sort column descending" style="width: 0px;">SN</th>
                         <th class="sorting" tabindex="0" aria-controls="zero_config" rowspan="1" colspan="1" aria-label="Department Name: activate to sort column ascending" style="width: 0px;">Name</th>
                         <th style="width: 0px;" class="sorting" tabindex="0" aria-controls="zero_config" rowspan="1" colspan="1" aria-label="Action: activate to sort column ascending">Phone</th>
                         <th style="width: 0px;" class="sorting" tabindex="0" aria-controls="zero_config" rowspan="1" colspan="1" aria-label="Action: activate to sort column ascending"> Email</th>
                         <th style="width: 0px;" class="sorting" tabindex="0" aria-controls="zero_config" rowspan="1" colspan="1" aria-label="Action: activate to sort column ascending"> Client</th>
+                        <th style="width: 0px;" class="sorting" tabindex="0" aria-controls="zero_config" rowspan="1" colspan="1" aria-label="Action: activate to sort column ascending"> Total Task</th>
                         <th style="width:0px;" class="sorting" tabindex="0" aria-controls="zero_config" rowspan="1" colspan="1" aria-label="Action: activate to sort column ascending"> Status</th>
                         <th style="width: 50px" class="sorting" tabindex="0" aria-controls="zero_config" rowspan="1" colspan="1" aria-label="Action: activate to sort column ascending">Action</th>
                     </tr>
@@ -62,7 +63,7 @@
                     @foreach($users as $user)
                     <tr role="row" class="odd">
                         <td class="sorting_1">{{$sn++}}</td>
-                        <td>{{$user->name}}</td>
+                        <td> <a href="{{route('backend.employee.view_employee_tasks', [Crypt::encrypt($user->id)])}}">{{$user->name}}</td>
                         <td>{{$user->phone}}</td>
                         <td>{{$user->email}}</td>
                         <td>
@@ -79,8 +80,15 @@
                             @else
                             No Client Assigned
                             @endif
-                          
                         </td>
+                        <td>
+                            @if(count($user->getEmployeeTask) > 0)
+                                <a href="{{route('backend.employee.view_employee_tasks', [Crypt::encrypt($user->id)])}}">{{count($user->getEmployeeTask)}} Task</a>
+                            @else
+                            <p>No Task Assigned</p>
+                            @endif
+                        </td>
+
                         <td>
                             <div class="form-check form-switch">
                                 <input class="form-check-input" type="checkbox" id="status" style="width:40px"
@@ -100,7 +108,7 @@
 
                 </tbody>
             </table>
-            {{$users->links('pagination::bootstrap-5')}}
+ 
         </div>
     </div>
 
@@ -250,6 +258,13 @@
         });
     });
 </script>
+ 
+<script>
+   $(document).ready(function() {
+            $('#zero_config').DataTable();
+    });
+</script>
+ 
  
 @endsection 
 @endsection

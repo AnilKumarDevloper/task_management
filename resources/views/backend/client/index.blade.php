@@ -42,51 +42,49 @@
             <div class="col-sm-12 overflowbox table_formate_stayle_font">
               <table id="client_management_table" class="table table-striped table-bordered text-nowrap dataTable no-footer" role="grid" aria-describedby="zero_config_info">
                 <thead>
-                  <tr role="row">
+                  <tr role="row" class="subHeaderTable">
                     <th class="sorting_asc text-dark" tabindex="0" aria-controls="zero_config" rowspan="1" colspan="1" aria-sort="ascending" aria-label="SN: activate to sort column descending" style="width: 0px;">SN</th>
                     <th class="sorting text-dark" tabindex="0" aria-controls="zero_config" rowspan="1" colspan="1" aria-label="Department Name: activate to sort column ascending" style="width: 0px;">Company Name</th>
-                    <th style="width: 0px;" class="sorting text-dark" tabindex="0" aria-controls="zero_config" rowspan="1" colspan="1" aria-label="Action: activate to sort column ascending">Phone Number</th>
-                    <th style="width: 0px;" class="sorting text-dark" tabindex="0" aria-controls="zero_config" rowspan="1" colspan="1" aria-label="Action: activate to sort column ascending">Address</th>
-                    <th style="width: 0px;" class="sorting text-dark" tabindex="0" aria-controls="zero_config" rowspan="1" colspan="1" aria-label="Action: activate to sort column ascending">Person Contact name</th>
-                    <th style="width: 0px;" class="sorting text-dark" tabindex="0" aria-controls="zero_config" rowspan="1" colspan="1" aria-label="Action: activate to sort column ascending">Person Contact Number</th>
-                    <th style="width: 0px;" class="sorting text-dark" tabindex="0" aria-controls="zero_config" rowspan="1" colspan="1" aria-label="Action: activate to sort column ascending">person contact email</th>
+                    <th style="width: 0px;" class="sorting text-dark" tabindex="0" aria-controls="zero_config" rowspan="1" colspan="1" aria-label="Action: activate to sort column ascending">Company Phone</th>
+                    <th style="width: 0px;" class="sorting text-dark" tabindex="0" aria-controls="zero_config" rowspan="1" colspan="1" aria-label="Action: activate to sort column ascending">Company Address</th>
+                    <th style="width: 0px;" class="sorting text-dark" tabindex="0" aria-controls="zero_config" rowspan="1" colspan="1" aria-label="Action: activate to sort column ascending">User name</th>
+                    <th style="width: 0px;" class="sorting text-dark" tabindex="0" aria-controls="zero_config" rowspan="1" colspan="1" aria-label="Action: activate to sort column ascending">User Phone</th>
+                    <th style="width: 0px;" class="sorting text-dark" tabindex="0" aria-controls="zero_config" rowspan="1" colspan="1" aria-label="Action: activate to sort column ascending">User email</th>
                     <th style="width: 0px;" class="sorting text-dark" tabindex="0" aria-controls="zero_config" rowspan="1" colspan="1" aria-label="Action: activate to sort column ascending">Status</th>
                     <th style="width: 0px;" class="sorting text-dark" tabindex="0" aria-controls="zero_config" rowspan="1" colspan="1" aria-label="Action: activate to sort column ascending">Action</th>
                   </tr>
                 </thead>
                 <tbody>
                   @foreach($users as $user)
-                    <tr role="row" class="odd">
-                      <td class="sorting_1">{{$sn++}}</td>
-                      <td>{{$user->GetCompanyDetail?->name}}</td>
-                      <td>{{$user->GetCompanyDetail?->phone}}</td>
-                      <td>{{$user->GetCompanyDetail?->address}}</td>
-                      <td>{{$user->name}}</td>
-                      <td>{{$user->phone}}</td>
-                      <td>{{$user->email}}</td>
-                      <td>
-                        <div class="form-check form-switch">
-                          <input class="form-check-input" type="checkbox" id="status" style="width:40px" data-id="{{$user->id}}" {{$user->deleted_at == null ? "checked":""}}>
-                        </div>
-                      </td>
-                      <td>
-                        <div class="delete_icon">
-                        <div class="d-flex gap-3" style="max-width: 100px;">
-                        <span>
-                          <a href="{{route('backend.client.view', [Crypt::encrypt($user->id)])}}" data-id="{{Crypt::encrypt($user->id)}}"><i class="ri-eye-line"></i></a>
-                        </span>
-                          @if(Auth::user()->role_id == 1 || Auth::user()->role_id == 2)
-                          <span>
-                            <a href="{{route('backend.client.edit', [Crypt::encrypt($user->id)])}}" class="editcolor"><i class="ri-pencil-line"></i></a>
-                          </span>
-                     
-                        @endif
-                        
-                      </div>
-                    </div>
-                  </td>
-                </tr>
-              @endforeach
+            <tr role="row" class="odd" class="">
+              <td class="sorting_1">{{$sn++}}</td>
+              <td><a href="{{route('backend.client.view', [Crypt::encrypt($user->id)])}}" data-id="{{Crypt::encrypt($user->id)}}">{{$user->GetCompanyDetail?->name}}</a></td>
+              <td>{{$user->GetCompanyDetail?->phone}}</td>
+              <td>{{$user->GetCompanyDetail?->address}}</td>
+              <td>{{$user->name}}</td>
+              <td>{{$user->phone}}</td>
+              <td>{{$user->email}}</td>
+              <td>
+              <div class="form-check form-switch">
+                <input class="form-check-input" type="checkbox" id="status" style="width:40px" data-id="{{$user->id}}" {{$user->deleted_at == null ? "checked" : ""}}>
+              </div>
+              </td>
+              <td>
+              <div class="delete_icon">
+              <div class="d-flex gap-3" style="max-width: 100px;">
+              <span>
+                <a href="{{route('backend.client.view', [Crypt::encrypt($user->id)])}}" data-id="{{Crypt::encrypt($user->id)}}"><i class="ri-eye-line"></i></a>
+              </span>
+                @if(Auth::user()->role_id == 1 || Auth::user()->role_id == 2)
+                <span>
+                <a href="{{route('backend.client.edit', [Crypt::encrypt($user->id)])}}" class="editcolor"><i class="ri-pencil-line"></i></a>
+                </span> 
+              @endif 
+              </div>
+            </div>
+            </td>
+          </tr>
+          @endforeach
             </tbody>
           </table>
         </div>
@@ -95,7 +93,6 @@
   </div> 
 
 @section('javascript_section')
-
 @if(Session::has('created'))
   <script>
       Swal.fire({
@@ -147,21 +144,14 @@
       }
     });
   });
-</script>
-<script>
-  document.addEventListener("DOMContentLoaded", function(){
-    const client_management_search = document.getElementById('client_management_search');
-    let client_management_table = document.querySelectorAll('#client_management_table tbody tr')
 
-      client_management_search.addEventListener('input', function(){
-        const client_management_search_value = client_management_search.value.toLowerCase();
-        client_management_table.forEach(row_element =>{
-          // row_element.
+ 
+            $(document).ready(function() {
+            $('#client_management_table').DataTable();
         });
-
-      });
-  });
+      
 </script>
+ 
 
 
 

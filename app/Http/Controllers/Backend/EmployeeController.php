@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Backend;
 
 use App\Http\Controllers\Controller;
 use App\Models\Backend\EmployeeAndClient;
+use App\Models\Backend\Task;
 use App\Models\User;
 use Auth;
 use Crypt;
@@ -12,10 +13,11 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules;
     
 class EmployeeController extends Controller{
-    public function index(Request $request){
+    public function index(Request $request){ 
+        try{
         if(Auth::user()->role_id == 1 || Auth::user()->role_id == 2){
             $search = $request->search; 
-            $users = User::with(['getEmployeeAndClient'])->where('role_id', 3)
+            $users = User::with(['getEmployeeTask'])->where('role_id', 3)
             ->where('status', 1);
             if (!empty($search)) {
                 $users = $users->where(function ($query) use ($search) {
@@ -25,23 +27,31 @@ class EmployeeController extends Controller{
                 });
             }
             $users = $users->withTrashed()->orderBy('id', 'desc')
-           ->paginate(10); 
+           ->paginate(100); 
             $users->appends([ 
             'search' => isset($_GET['search']) ? $_GET['search'] : '',
-            ]);
-                // return $users;
+            ]);  
             return view('backend.employee.employee_list', compact('users'));
         }else{
             return response()->view('errors.403', [], 403);
         }
+    }catch(\Exception $e){
+        abort('404');
     }
+    }
+
+ 
     public function create(){
+        try{
         if(Auth::user()->role_id == 1 || Auth::user()->role_id == 2){
             $clients = User::with('getCompanyDetail')->where('role_id', 4)->where('status', 1)->get();
             return view('backend.employee.create', compact('clients'));
         }else{ 
             return response()->view('errors.403', [], 403);
         }
+    }catch(\Exception $e){
+        abort('404');
+    }
     }
     public function store(Request $request){ 
         $request->validate([
@@ -76,6 +86,7 @@ class EmployeeController extends Controller{
         return redirect()->route('backend.employee.index')->with('created', 'Employee has been Added.');
     }
     public function edit($id){
+        try{
         if(Auth::user()->role_id == 1 || Auth::user()->role_id == 2){
             try{
                 $decrypt_id = Crypt::decrypt($id); 
@@ -96,6 +107,9 @@ class EmployeeController extends Controller{
         }else{
             return response()->view('errors.403', [], 403);
         }
+    }catch(\Exception $e){
+        abort('404');
+    }
     }
     public function update(Request $request, $id){  
         $request->validate([
@@ -161,15 +175,29 @@ class EmployeeController extends Controller{
                 return response()->json([
                     "status" => "permission_denied"
                 ], 403);
-            }
-           
+            } 
         }catch(\Exception $e){
             return response()->json([
                 "status" => "failed",
                 "error" => $e->getMessage()
             ], 400);
-        }
-
-
+        } 
+    } 
+    public function viewEmployeeTasks($id){ 
+        try{
+            if(Auth::user()->role_id != 1 && Auth::user()->role_id != 2){
+                return response()->view('errors.403', [], 403);
+            }
+        $decrypt_id = Crypt::decrypt($id);
+        $user = User::with(['getClient'])->where('id', $decrypt_id)->first();
+        // return $user;
+        $total_count = Task::where('assigned_to', $decrypt_id)->count();
+        $pending_count = Task::where('assigned_to', $decrypt_id)->where('current_status', 'pending')->count();
+        $inprocess_count = Task::where('assigned_to', $decrypt_id)->where('current_status', 'inprocess')->count();
+        $completed_count = Task::where('assigned_to', $decrypt_id)->where('current_status', 'completed')->count();
+        return view('backend.employee.view_employee_tasks', compact('id', 'pending_count', 'inprocess_count', 'completed_count', 'total_count', 'user'));
+    }catch(\Exception $e){
+        abort('404');
+    }
     }
 }

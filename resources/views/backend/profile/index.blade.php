@@ -32,7 +32,7 @@
                         @elseif(Auth::user()->role_id == 3)
                         <p>Employee</p>
                         @elseif(Auth::user()->role_id == 4)
-                        <p>Client</p>
+                        <p>{{$company_name}}</p>
                         @endif 
                     </center>
                 </div>

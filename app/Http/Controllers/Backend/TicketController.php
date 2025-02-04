@@ -24,7 +24,7 @@ class TicketController extends Controller{
                 $right_requests = AdditionalRightsRequest::where('raised_by', Auth::user()->id)->get();
                 $tickets = $tickets->where('raised_by', Auth::user()->id);
             }
-            $tickets = $tickets->orderBy('id', 'desc')->paginate(20); 
+            $tickets = $tickets->orderBy('id', 'desc')->get(); 
             return view('backend.ticket.index', compact('tickets', 'right_requests'));
         }else{
             return view('errors.403');

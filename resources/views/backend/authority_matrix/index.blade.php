@@ -35,17 +35,17 @@
                 <div class="row">
                     <div class="col-sm-12 overflowbox table_formate_stayle_font">
                     
-                    <table id="zero_config" class="table table-striped table-bordered text-nowrap dataTable no-footer" role="grid"
+                    <table id="authority_matrix_table" class="table table-striped table-bordered text-nowrap dataTable no-footer" role="grid"
                             aria-describedby="zero_config_info">
                             <thead>
-                                <tr role="row">
+                                <tr role="row" class="subHeaderTable">
                                     <th class="sorting_asc text-dark" tabindex="0" aria-controls="zero_config" rowspan="1" colspan="1"
                                         aria-sort="ascending" aria-label="SN: activate to sort column descending" style="width: 0px;">SN
                                     </th>
                                     <th style="width: 0px;" class="sorting text-dark" tabindex="0" aria-controls="zero_config" rowspan="1"
                                     colspan="1" aria-label="Action: activate to sort column ascending">User Name</th>
                                     <th style="width: 0px;" class="sorting text-dark" tabindex="0" aria-controls="zero_config" rowspan="1"
-                                    colspan="1" aria-label="Action: activate to sort column ascending">Authority Rights</th>
+                                    colspan="1" aria-label="Action: activate to sort column ascending">Authority/Rights</th>
                                     <th style="width: 0px;" class="sorting text-dark" tabindex="0" aria-controls="zero_config" rowspan="1"
                                         colspan="1" aria-label="Action: activate to sort column ascending">Action</th>
                                 </tr>
@@ -82,7 +82,7 @@
                                 @endif
                             </tbody>
                         </table>
-                       {{$clients->links("pagination::bootstrap-5")}}
+                       
                     </div>
                 </div>
             </div>
@@ -160,6 +160,12 @@
         });
     </script>
   @endif
+
+  <script>
+          $(document).ready(function() {
+            $('#authority_matrix_table').DataTable();
+        });
+  </script>
 @endsection
 
 @endsection

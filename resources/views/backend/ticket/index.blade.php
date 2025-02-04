@@ -40,9 +40,9 @@
         <div class="row">
             <div class="col-sm-12 overflowbox table_formate_stayle_font">
                 @if(count($tickets) > 0)
-                    <table id="zero_config" class="table table-striped table-bordered text-nowrap dataTable no-footer"role="grid" aria-describedby="zero_config_info">
+                    <table id="ticket_table" class="table table-striped table-bordered text-nowrap dataTable no-footer"role="grid" aria-describedby="zero_config_info">
                         <thead>
-                            <tr role="row">
+                            <tr role="row" class="subHeaderTable">
                                 <th class="sorting_asc text-dark" tabindex="0" aria-controls="zero_config" rowspan="1" colspan="1" aria-sort="ascending" aria-label="SN: activate to sort column descending" style="width: 0px;">SN</th>
                                 <th style="width: 0px;" class="sorting text-dark" tabindex="0" aria-controls="zero_config" rowspan="1" colspan="1" aria-label="Action: activate to sort column ascending">Ticket Number</th>
                                 <th class="sorting text-dark" tabindex="0" aria-controls="zero_config" rowspan="1" colspan="1" aria-label="Department Name: activate to sort column ascending" style="width: 0px;">Raised
@@ -117,7 +117,7 @@
                             @endforeach
                         </tbody>
                     </table>
-                    {{$tickets->links('pagination::bootstrap-5')}}
+
                 @else
                     <p>No Ticket Found</p>
                 @endif
@@ -128,6 +128,7 @@
  
     </div>
 @section('javascript_section') 
+
     @if(Session::has('created'))
         <script>
             Swal.fire({
@@ -139,6 +140,10 @@
     @endif
     
     <script> 
+          $(document).ready(function() {
+            $('#ticket_table').DataTable();
+        });
+
         $(document).on("click", ".send_reminder_btn", async function(){
             let ticket_id = $(this).data('id'); 
             let url = "{{route('backend.ticket.send_reminder')}}"; 

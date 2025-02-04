@@ -16,10 +16,11 @@
     <link rel="stylesheet" href="{{url('assets/backend/libs/prism/prism.css')}}">
     <link rel="stylesheet" href="{{url('assets/backend/css/styles.css')}}">
     <link rel="stylesheet" href="{{url('assets/backend/dist/css/custom.css')}}">
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/jquery.dataTables.min.css">  
 
 </head>
 @php
-    $layout_setting = \App\Models\Backend\LayoutSetting::where('id', 1)->first();
+$layout_setting = \App\Models\Backend\LayoutSetting::where('id', 1)->first();
 @endphp
 <style>
     .select2-container--classic .select2-selection--multiple .select2-selection__choice,
@@ -33,13 +34,24 @@
         position: absolute;
         right: 0;
     }
-
+    
     /* #navbarSupportedContent{
         background: {{$layout_setting->navbar_color}}
     ;
     }
 
     */
+
+    /* #sidebarnav li a i,  #sidebarnav li a span{
+        color:#fff !important;
+    } */
+    .submenuSider{
+        background:none !important;
+    }
+
+
+    
+    
 </style>
 
 <body>
@@ -49,7 +61,7 @@
                 <div class="navbar-header">
                     <a class="nav-toggler waves-effect waves-light d-block d-md-none" id="menubar_open"
                         href="javascript:void(0)"><i class="ri-close-line ri-menu-2-line fs-6 close_icon"></i></a>
-                    <a class="navbar-brand" href="#">
+                    <a class="navbar-brand" href="{{route('backend.dashboard.view')}}">
                         <b class="logo-icon">
                             <!-- <span><i class="ri-stack-line"></i></span> -->
                             <span>
@@ -82,7 +94,7 @@
                     <ul class="navbar-nav me-auto">
                         <li class="nav-item">
                             <a class="nav-link sidebartoggler d-none d-md-block" href="javascript:void(0)"><i
-                                    data-feather="menu"></i></a>
+                                    data-feather="menu" class="text-white"></i></a>
                         </li>
                         <!-- <li class="nav-item search-box">
                             <a class="nav-link" href="javascript:void(0)">
@@ -96,36 +108,36 @@
                     </ul>
                     @if(Auth::user()->role_id == 4)
                                         @php
-                                            if (Auth::user()->role_id == 4) {
-                                                $company = App\Models\Backend\CompanyDetail::where('user_id', Auth::user()->id)->first();
-                                            } 
+    if (Auth::user()->role_id == 4) {
+        $company = App\Models\Backend\CompanyDetail::where('user_id', Auth::user()->id)->first();
+    } 
                                         @endphp
                                         <ul class="navbar-nav me-auto">
                                             <li class="nav-item d-flex gap-3 align-items-center">
                                                 @if($company->logo != null)
 
-                                                    <img src="{{url($company->logo_url . '/' . $company->logo)}}" alt="" style="width: 90px;">
-                                                @endif
                                                 <h5 class="mb-0 pb-0">{{$company->name ?? ''}}</h5>
+                                                @endif
+                                                <img src="{{url($company->logo_url . '/' . $company->logo)}}" alt="" style="width: 90px;">
                                             </li>
                                         </ul>
                     @endif
-                    <ul class="navbar-nav">
+                    <ul class="navbar-nav"> 
                         <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle d-flex align-items-center clicknottification" href="#"
+                            <a class="nav-link dropdown-toggle d-flex align-items-center text-white clicknottification" href="#"
                                 data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                                <svg class="notification_icon_color" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" style="color:{{$layout_setting->notification_icon_color}};"
                                     fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
                                     stroke-linejoin="round" class="feather feather-bell">
                                     <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
                                     <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
                                 </svg>
                                 @php
-                                    $notifications = \App\Models\Backend\Notification::where('for', Auth::user()->id)->orderBy('id', 'desc')->get();
-
-                                    $unread_notifications = \App\Models\Backend\Notification::where('status', 1)->where('for', Auth::user()->id)->count();
+                                $notifications = \App\Models\Backend\Notification::where('for', Auth::user()->id)->orderBy('id', 'desc')->get();
+                                $unread_notifications = \App\Models\Backend\Notification::where('status', 1)->where('for', Auth::user()->id)->count();
                                 @endphp
 
+                                @if($unread_notifications > 0)
                                 <div class="notify" style="left:-5px; top:-15px">
                                     <!-- <span class="point bg-primary"></span> -->
                                     <div class="border-radius text-white d-flex align-items-center justify-content-center "
@@ -133,11 +145,9 @@
                                         <span>{{$unread_notifications}}</span>
                                     </div>
                                 </div>
-
+                                @endif 
                             </a>
-                            <div
-                                class="dropdown-menu dropdown-menu-end mailbox dropdown-menu-animate-up profilepageelementPage notificationPageelement">
-
+                            <div class="dropdown-menu dropdown-menu-end mailbox dropdown-menu-animate-up profilepageelementPage notificationPageelement">
                                 <ul class="list-style-none">
                                     <li>
                                         <div class="rounded-top p-30 pb-2 d-flex align-items-center">
@@ -173,11 +183,13 @@
                                                 </div>
                                             </div>
                                         </div>
-                                        <!-- <div class="mt-4">
-                                            <a class="btn btn-info text-white" href="javascript:void(0);">
+                                         @if(count($notifications) > 0)
+                                        <div class="mt-4">
+                                            <a class="btn btn-info text-white" href="{{route('backend.notification.index')}}">
                                                 See all notifications
                                             </a>
-                                        </div> -->
+                                        </div>
+                                        @endif
                                     </li>
                                 </ul>
                             </div>
@@ -194,10 +206,10 @@
                                         style="width:30px; height:30px; border-radius:50%;" />
                                 @endif
 
-                                <div class="d-none d-md-flex align-items-center ">
-                                    <span class="ms-2">Hi,
-                                        <span class="text-dark fw-bold">{{Auth::user()->name}}</span></span>
-                                    <span><i data-feather="chevron-down" class="feather-sm"></i></span>
+                                <div class="d-none d-md-flex align-items-center text-white">
+                                    <span class="ms-2 user_name_text_color" style="color:{{$layout_setting->user_name_text_color}};">Hi,
+                                       <b>{{Auth::user()->name}}</span> </b>
+                                    <span class="user_name_text_color" style="color:{{$layout_setting->user_name_text_color}};"><i data-feather="chevron-down" class="feather-sm"></i></span>
                                 </div>
                             </a>
                             <div
@@ -237,7 +249,7 @@
                                                     @elseif(Auth::user()->role_id == 3)
                                                         Employee
                                                     @elseif(Auth::user()->role_id == 4)
-                                                        Client
+                                                        <!-- Client -->
                                                     @endif
                                                 </span>
                                                 <p class="text-muted mb-0 mt-1">
@@ -294,13 +306,13 @@
                         <li class="sidebar-item">
                             <a class="sidebar-link waves-effect waves-dark sidebar-link"
                                 href="{{route('backend.dashboard.view')}}" aria-expanded="false">
-                                <i class="ri-dashboard-line"></i> <span class="hide-menu">Dashboard</span></a>
+                                <i class="ri-dashboard-line main_menu" style="color:{{$layout_setting->menu_text_color}};"></i> <span class="hide-menu main_menu" style="color:{{$layout_setting->menu_text_color}};">Dashboard</span></a>
                         </li>
                         @if(Auth::user()->role_id == 1 || Auth::user()->role_id == 2)
                             <li class="sidebar-item">
                                 <a class="sidebar-link waves-effect waves-dark sidebar-link"
                                     href="{{route('backend.employee.index')}}" aria-expanded="false">
-                                    <i class="ri-group-line"></i><span class="hide-menu">Employee Managemen</span>
+                                    <i class="ri-group-line main_menu" style="color:{{$layout_setting->menu_text_color}};"></i><span class="hide-menu main_menu" style="color:{{$layout_setting->menu_text_color}};">Employee Management</span>
                                 </a>
                             </li>
                         @endif
@@ -309,7 +321,7 @@
                             <li class="sidebar-item">
                                 <a class="sidebar-link waves-effect waves-dark sidebar-link"
                                     href="{{route('backend.client.index')}}" aria-expanded="false">
-                                    <i data-feather="message-circle"></i><span class="hide-menu">Client Managment</span>
+                                    <i class="ri-safe-2-line main_menu" style="color:{{$layout_setting->menu_text_color}};"></i><span class="hide-menu main_menu" style="color:{{$layout_setting->menu_text_color}};">Client Management</span>
                                 </a>
                             </li>
                         @endif
@@ -317,21 +329,21 @@
                         <li class="sidebar-item">
                             <a class="sidebar-link waves-effect waves-dark sidebar-link"
                                 href="{{route('backend.task.index')}}" aria-expanded="false">
-                                <i class="ri-task-line"></i> <span class="hide-menu">Task Managment</span>
+                                <i class="ri-task-line main_menu" style="color:{{$layout_setting->menu_text_color}};"></i> <span class="hide-menu main_menu" style="color:{{$layout_setting->menu_text_color}};">Task Management</span>
                             </a>
                         </li>
 
                         <li class="sidebar-item">
                             <a class="sidebar-link waves-effect waves-dark sidebar-link"
                                 href="{{route('backend.ticket.index')}}" aria-expanded="false">
-                                <i class="ri-ticket-2-line"></i> <span class="hide-menu">Ticket Portal </span>
+                                <i class="ri-ticket-2-line main_menu" style="color:{{$layout_setting->menu_text_color}};"></i> <span class="hide-menu main_menu" style="color:{{$layout_setting->menu_text_color}};">Ticket Portal </span>
                             </a>
                         </li>
                         @if(Auth::user()->role_id == 1 || Auth::user()->role_id == 2 || Auth::user()->role_id == 4)
                             <li class="sidebar-item">
                                 <a class="sidebar-link waves-effect waves-dark sidebar-link"
                                     href="{{route('backend.authority_matrix.index')}}" aria-expanded="false">
-                                    <i class="ri-safe-2-line"></i> <span class="hide-menu">Authority Matrix
+                                    <i class="ri-safe-2-line main_menu" style="color:{{$layout_setting->menu_text_color}};"></i> <span class="hide-menu main_menu" style="color:{{$layout_setting->menu_text_color}};">Authority Matrix
                                 </a>
                             </li>
                         @endif
@@ -340,7 +352,7 @@
                             <li class="sidebar-item">
                                 <a class="sidebar-link waves-effect waves-dark sidebar-link"
                                     href="{{route('backend.additional_rights_request.index')}}" aria-expanded="false">
-                                    <i class="ri-task-line"></i> <span class="hide-menu">Add. Rights Req.</a>
+                                    <i class="ri-task-line main_menu" style="color:{{$layout_setting->menu_text_color}};"></i> <span class="hide-menu main_menu" style="color:{{$layout_setting->menu_text_color}};">Add. Rights Req.</a>
                             </li>
                         @endif
 
@@ -348,15 +360,15 @@
                             <li class="sidebar-item">
                                 <a class="sidebar-link has-arrow waves-effect waves-dark" href="javascript:void(0)"
                                     aria-expanded="false">
-                                    <i class="ri-settings-3-line fs-7"></i><span class="hide-menu">Setting </span></a>
-                                <ul aria-expanded="false" class="collapse first-level">
+                                    <i class="ri-settings-3-line fs-7 main_menu" style="color:{{$layout_setting->menu_text_color}};"></i><span class="hide-menu main_menu" style="color:{{$layout_setting->menu_text_color}};">Setting </span></a>
+                                <ul aria-expanded="false" class="collapse first-level submenuSider">
                                     <li class="sidebar-item">
-                                        <a href="{{route('backend.fy_year.index')}}" class="sidebar-link"><i
-                                                class="ri-ticket-line"></i><span class="hide-menu"> FY List</span></a>
+                                        <a href="{{route('backend.fy_year.index')}}" class="sidebar-link">
+                                            <i class="ri-ticket-line main_menu" style="color:{{$layout_setting->menu_text_color}};"></i><span class="hide-menu main_menu" style="color:{{$layout_setting->menu_text_color}};"> FY List</span></a>
                                     </li>
                                     <li class="sidebar-item">
                                         <a href="{{route('backend.setting.layout_color')}}" class="sidebar-link"><i
-                                                class="ri-ticket-line"></i><span class="hide-menu">Layout Setting</span></a>
+                                                class="ri-ticket-line main_menu" style="color:{{$layout_setting->menu_text_color}};"></i><span class="hide-menu main_menu" style="color:{{$layout_setting->menu_text_color}};">Layout Setting</span></a>
                                     </li>
                                 </ul>
                             </li>

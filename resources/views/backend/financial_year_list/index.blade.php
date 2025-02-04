@@ -36,10 +36,10 @@
                 <div class="col-sm-12 table_formate_stayle_font overflowbox">
                     @php $sn = 1;
                     @endphp
-                    <table id="zero_config" class="table table-striped table-bordered text-nowrap dataTable no-footer" role="grid"
+                    <table id="fy_list_table" class="table table-striped table-bordered text-nowrap dataTable no-footer" role="grid"
                         aria-describedby="zero_config_info">
                         <thead>
-                            <tr role="row">
+                            <tr role="row" class="subHeaderTable">
                                 <th class="sorting_asc text-dark" tabindex="0" aria-controls="zero_config" rowspan="1" colspan="1"
                                     aria-sort="ascending" aria-label="SN: activate to sort column descending" style="width: 0px;">SN
                                 </th>
@@ -99,7 +99,11 @@
     });
 </script>
 @endif
- 
+ <script>
+          $(document).ready(function() {
+            $('#fy_list_table').DataTable();
+        });
+ </script>
   
 @endsection 
 @endsection

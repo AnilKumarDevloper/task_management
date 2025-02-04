@@ -20,6 +20,10 @@ use Illuminate\Support\Facades\File;
 use Str;
 class ClientController extends Controller{
     public function index(){
+        if(Auth::user()->role_id == 4){
+            return response()->view('errors.403', [], 405);
+        }
+
         $users = User::with('GetCompanyDetail')->where('role_id',4);
         if(Auth::user()->role_id == 3){
             $clients = EmployeeAndClient::where('user_id', Auth::user()->id)->pluck('client_id')->toArray();

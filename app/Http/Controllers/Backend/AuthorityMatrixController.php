@@ -18,7 +18,7 @@ class AuthorityMatrixController extends Controller{
             if(Auth::user()->role_id == 4){
                 $right_requests = AdditionalRightsRequest::where('raised_by', Auth::user()->id)->get();
             } 
-            $clients = $clients->where('role_id', 4)->orderBy('id', 'desc')->paginate(10); 
+            $clients = $clients->where('role_id', 4)->orderBy('id', 'desc')->get(); 
             return view('backend.authority_matrix.index', compact('clients', 'right_requests'));
         }else{
             return view('errors.403');

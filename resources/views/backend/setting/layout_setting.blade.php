@@ -55,7 +55,8 @@
 
                        </div>
                          
-                        
+                        <hr>
+                        <hr>
                         <div class="row mb-4 mt-4 ">
                             
                             <div class="mb-3 col-md-2 col-6">
@@ -77,7 +78,7 @@
                                 </div>
                             </div>
 
-                            <div class="mb-3 col-md-2 col-6">
+                            <div class="mb-3 col-md-3 col-6">
                                 <label for="example-email" class="textcenterElement"><b class="boldname">Logo Sub Heading Color</b></label>
                                 <div class="colmd12 d-flex justify-content-center">
                                     <input type="color" name="sub_logo_text_color" class="form-control form-control-line color_picker"
@@ -85,13 +86,42 @@
                                 </div>
                             </div>
 
-                            <div class="mb-3 col-md-2 col-6">
+                            <div class="mb-3 col-md-3 col-6">
                                 <label for="example-email" class="textcenterElement"><b class="boldname">Copyright Text Color</b></label>
                                 <div class="colmd12 d-flex justify-content-center">
-                                    <input type="color" name="footer_text_color" class="form-control form-control-line color_picker" value="{{$layout_setting->footer_text_color}}" id="footer_text_color" >
+                                    <input type="color" name="footer_text_color" class="form-control form-control-line color_picker" value="{{$layout_setting->footer_text_color}}" id="footer_text_color">
                                 </div>
-                            </div>   
-                        </div>
+                            </div>
+                            <hr>
+                            <hr>
+                            
+                            
+
+                            <div class="mb-3 col-md-2 col-6">
+                                <label for="example-email" class="textcenterElement"><b class="boldname">Menu Text Color</b></label>
+                                <div class="colmd12 d-flex justify-content-center">
+                                    <input type="color" name="menu_text_color" class="form-control form-control-line color_picker" value="{{$layout_setting->menu_text_color}}" id="menu_text_color" >
+                                </div>
+                            </div> 
+                            <div class="mb-3 col-md-3 col-6">
+                                <label for="example-email" class="textcenterElement"><b class="boldname">User Name Text Color</b></label>
+                                <div class="colmd12 d-flex justify-content-center">
+                                    <input type="color" name="user_name_text_color" class="form-control form-control-line color_picker" value="{{$layout_setting->user_name_text_color}}" id="user_name_text_color" >
+                                </div>
+                            </div> 
+                            <div class="mb-3 col-md-3 col-6">
+                                <label for="example-email" class="textcenterElement"><b class="boldname">Notification Icon Color</b></label>
+                                <div class="colmd12 d-flex justify-content-center">
+                                    <input type="color" name="notification_icon_color" class="form-control form-control-line color_picker" value="{{$layout_setting->notification_icon_color}}" id="notification_icon_color" >
+                                </div>
+                            </div> 
+                          
+                         
+                         
+                            <hr>
+                            <hr>    
+                          
+                            
                         <div class="row">
                                 <div class="col-md-5 col-12 mb-3">
                                         <div class="inputChangeElement">
@@ -126,10 +156,10 @@
                         </b>
                 </form>
                     <div class="d-flex justify-content-end">
-                        <form action="{{route('backend.setting.update_default_layout')}}" method="POST">
+                        <form action="{{route('backend.setting.update_default_layout')}}" method="POST" id="default_setting_form">
                             @csrf
-                            <button type="submit" class="btn btn-primary">Default Setting</button>
                         </form>
+                        <button  class="btn btn-primary" id="default_setting_btn">Default Setting</button>
                     </div>
             </div>
           
@@ -169,6 +199,23 @@
 
 <script>
         $(document).ready(function(){
+            $(document).on("click", "#default_setting_btn", function(e){
+                event.preventDefault();
+                Swal.fire({
+                    title: "Are you sure?",
+                    text: "You won't be able to revert this!",
+                    icon: "warning",
+                    showCancelButton: true,
+                    confirmButtonColor: "#3085d6",
+                    cancelButtonColor: "#d33",
+                    confirmButtonText: "Yes, Change it!"
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        $("#default_setting_form").submit();
+                    }
+                });
+            })
+
             $('#navbar_color').on('input', function(){
               let navbar_color = $(this).val();
               $('#navbarSupportedContent').css({
@@ -176,37 +223,60 @@
               });
             });
 
-            $('#sidebar_background').on('input', function ()
-            {
+            $('#sidebar_background').on('input', function (){
                 let sidebar_background = $(this).val();
                 $('.sidbar_background_color').css({
                     'background-color': sidebar_background,
                 });
             });
 
-            $('#logo_text_color').on('input', function ()
-            {
+            $('#logo_text_color').on('input', function (){
                 let logo_text_color = $(this).val();
                 $('.logo_text_color').css({
                     'color': logo_text_color,
                 });
             });
 
-            $('#footer_text_color').on('input', function ()
-            {
+            $('#footer_text_color').on('input', function (){
                 let footer_text_color = $(this).val();
                 $('.footerCopyRight').css({
                     'color': footer_text_color,
                 });
             });
 
-            $('#sub_logo_text_color').on('input', function ()
-            {
+            $('#sub_logo_text_color').on('input', function (){
                 let sub_logo_text_color = $(this).val();
                 $('.sub_logo_text').css({
                     'color': sub_logo_text_color,
                 });
             });
+            $('#menu_text_color').on('input', function (){
+                let menu_text_color = $(this).val();
+                $('.main_menu').css({
+                    'color': menu_text_color,
+                });
+            });
+            $('#submenu_text_color').on('input', function (){
+                let submenu_text_color = $(this).val();
+                $('.sub_menu').css({
+                    'color': submenu_text_color,
+                });
+            });
+            $('#user_name_text_color').on('input', function (){
+                let user_name_text_color = $(this).val();
+                $('.user_name_text_color').css({
+                    'color': user_name_text_color,
+                });
+            });
+            $('#notification_icon_color').on('input', function (){
+                let notification_icon_color = $(this).val();
+                $('.notification_icon_color').css({
+                    'color': notification_icon_color,
+                });
+            });
+
+
+
         })
 
        

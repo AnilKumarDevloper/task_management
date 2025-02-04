@@ -41,8 +41,9 @@ Route::middleware(['auth','verified'])->group(function(){
             Route::get('/edit/{id}', 'edit')->name('backend.employee.edit');
             Route::post('/store', 'store')->name('backend.employee.store');
             Route::post('/update/{id}', 'update')->name('backend.employee.update');
-            Route::delete('/destroy/{id}', 'destroy')->name('backend.employee.destroy');
+            Route::delete('/destroy/{id}', 'destroy')->name('backend.employee.destroy'); 
             Route::get('/change-status', 'changeStatus')->name('backend.employee.change_status');
+            Route::get('/view-employee-tasks/{id}', 'viewEmployeeTasks')->name('backend.employee.view_employee_tasks');
         });
     });
     Route::controller(ClientController::class)->group(function(){
@@ -138,6 +139,7 @@ Route::middleware(['auth','verified'])->group(function(){
     });
     Route::controller(NotificationController::class)->group(function(){
         Route::prefix('admin/notification')->group(function(){
+            Route::get('/', 'index')->name('backend.notification.index');
             Route::get('/view/{id}', 'viewNotification')->name('backend.notification.view');
         });
     });

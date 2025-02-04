@@ -63,13 +63,26 @@ class TaskController extends Controller{
             ]);
         }
     }
+
     public function index(Request $request){
+        $task_status = $request->task_status; 
         $tasks = Task::select('*')->with(['getEmployee:id,name', 'getClient:id,name', 'getAssignedBy:id,name', 'getAmendedBy:id,name']);
+        if($task_status != '' && $task_status == 'pending'){
+            $tasks = $tasks->where('current_status', 'pending');
+        }elseif($task_status != '' && $task_status == 'inprocess'){
+            $tasks = $tasks->where('current_status', 'inprocess');
+        }elseif($task_status != '' && $task_status == 'completed'){
+            $tasks = $tasks->where('current_status', 'completed');
+        } 
+        if(isset($_GET['assigned_to']) && $_GET['assigned_to'] != ''){
+            $assigned_to = Crypt::decrypt($request->assigned_to);
+            $tasks = $tasks->where('assigned_to', $assigned_to);
+        } 
         if(Auth::user()->role_id == 4){
             $tasks = $tasks->where('client_id', Auth::user()->id);
         }
         elseif(Auth::user()->role_id == 3){
-            if(Auth::user()->clients != ''){ 
+            if(Auth::user()->clients != ''){
                 $tasks = $tasks->whereIn('client_id', Auth::user()->clients);
             }else{ 
                 $tasks = $tasks->where('client_id', Auth::user()->client_id);
@@ -82,7 +95,7 @@ class TaskController extends Controller{
             return $clientGroup->groupBy('year')->map(function ($yearGroup){
                 return $yearGroup->groupBy('month');
             });
-        }); 
+        });
         return view('backend.task.index', compact('tasks'));
     }
     // to assign task from folder (not in use now) start
@@ -158,8 +171,8 @@ class TaskController extends Controller{
                     'file_original_name' => $originalFileName,
                     'file_path' => 'client_data/tasks'
                 ]);  
-            }   
-        }  
+            }
+        }
         $notificationData = [ 
             'text' => 'You have received a new task.',
             'for' => $request->employee,

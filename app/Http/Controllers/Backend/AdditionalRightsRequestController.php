@@ -19,7 +19,7 @@ class AdditionalRightsRequestController extends Controller{
         if(Auth::user()->role_id == 4){
             $right_requests = $right_requests->where('raised_by', Auth::user()->id);
         }
-        $right_requests =$right_requests->orderBy('id', 'desc')->paginate(20);
+        $right_requests =$right_requests->orderBy('id', 'desc')->get();
         return view('backend.aditional_rights_request.index', compact('right_requests'));
     }
     public function create(){
