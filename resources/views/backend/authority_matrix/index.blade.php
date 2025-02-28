@@ -33,6 +33,7 @@
                     </div> -->
                      <!---search box  end--->
                 <div class="row">
+                @if(count($clients) > 0)
                     <div class="col-sm-12 overflowbox table_formate_stayle_font">
                     
                     <table id="authority_matrix_table" class="table table-striped table-bordered text-nowrap dataTable no-footer" role="grid"
@@ -43,7 +44,9 @@
                                         aria-sort="ascending" aria-label="SN: activate to sort column descending" style="width: 0px;">SN
                                     </th>
                                     <th style="width: 0px;" class="sorting text-dark" tabindex="0" aria-controls="zero_config" rowspan="1"
-                                    colspan="1" aria-label="Action: activate to sort column ascending">User Name</th>
+                                    colspan="1" aria-label="Action: activate to sort column ascending">Client Name</th>
+                                    <th style="width: 0px;" class="sorting text-dark" tabindex="0" aria-controls="zero_config" rowspan="1"
+                                    colspan="1" aria-label="Action: activate to sort column ascending">Company Name</th>
                                     <th style="width: 0px;" class="sorting text-dark" tabindex="0" aria-controls="zero_config" rowspan="1"
                                     colspan="1" aria-label="Action: activate to sort column ascending">Authority/Rights</th>
                                     <th style="width: 0px;" class="sorting text-dark" tabindex="0" aria-controls="zero_config" rowspan="1"
@@ -57,6 +60,7 @@
                                         <tr>
                                             <td>{{$sn++}}</td>
                                             <td>{{$client->name}}</td>
+                                            <td>{{$client->getCompanyDetail->name}}</td>
                                             <td> 
                                                 @foreach($client->getAuthorityMatrix as $index => $right)
                                                     {{strtoupper($right->permission)}} 
@@ -84,6 +88,9 @@
                         </table>
                        
                     </div>
+                    @else
+                    <center><h3>No Record Available</h3></center>
+                @endif
                 </div>
             </div>
 

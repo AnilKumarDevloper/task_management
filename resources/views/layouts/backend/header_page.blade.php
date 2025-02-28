@@ -114,11 +114,10 @@ $layout_setting = \App\Models\Backend\LayoutSetting::where('id', 1)->first();
                                         @endphp
                                         <ul class="navbar-nav me-auto">
                                             <li class="nav-item d-flex gap-3 align-items-center">
-                                                @if($company->logo != null)
-
-                                                <h5 class="mb-0 pb-0">{{$company->name ?? ''}}</h5>
-                                                @endif
+                                                @if($company->logo != null) 
+                                                <!-- <h5 class="mb-0 pb-0">{{$company->name ?? ''}}</h5> -->
                                                 <img src="{{url($company->logo_url . '/' . $company->logo)}}" alt="" style="width: 90px;">
+                                                @endif
                                             </li>
                                         </ul>
                     @endif

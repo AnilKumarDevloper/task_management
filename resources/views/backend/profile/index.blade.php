@@ -30,9 +30,7 @@
                         @elseif(Auth::user()->role_id == 2)
                         <p>Admin</p>
                         @elseif(Auth::user()->role_id == 3)
-                        <p>Employee</p>
-                        @elseif(Auth::user()->role_id == 4)
-                        <p>{{$company_name}}</p>
+                        <p>Employee</p> 
                         @endif 
                     </center>
                 </div>
@@ -51,7 +49,7 @@
             <div class="card overflow-hidden h-100">
                 <ul class="nav nav-pills" id="pills-tab" role="tablist">
                     <li class="nav-item">
-                        <a class="nav-link active" id="pills-timeline-tab" data-bs-toggle="pill" href="" role="tab" aria-controls="pills-timeline" aria-selected="true">Setting</a>
+                        <a class="nav-link active" id="pills-timeline-tab" data-bs-toggle="pill" href="" role="tab" aria-controls="pills-timeline" aria-selected="true">My Profile</a>
                     </li>
                 </ul>
                 <div class="tab-content" id="pills-tabContent">

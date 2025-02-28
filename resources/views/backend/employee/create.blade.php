@@ -96,14 +96,13 @@
                 </div> -->
 
                 <div class="col-md-4 mt-4">
-                    <label for="clients" id="" class="control-label">Select Client:</label>
+                    <label for="clients" id="" class="control-label">Select Company:</label>
                     <div class="">
                         <select class="select2 form-control select2-hidden-accessible focusBorder" multiple=""
                             style="height: 34px; width: 100%;" data-select2-id="13" tabindex="-1" aria-hidden="true" name="clients[]">
                             @foreach($clients as $client)
                             <option value="{{$client->id}}" data-select2-id="{{$client->id}}">{{$client->getCompanyDetail->name}}</option>
-                            @endforeach
-
+                            @endforeach 
                         </select>
                     </div>
                 </div>

@@ -11,7 +11,7 @@ class AuthorityMatrixController extends Controller{
     public function index(){
         $right_requests = '';
         if(Auth::user()->role_id == 1 || Auth::user()->role_id == 2 || Auth::user()->role_id == 4){
-            $clients = User::with('getAuthorityMatrix');
+            $clients = User::with(['getAuthorityMatrix', 'getCompanyDetail']);
             if(Auth::user()->role_id == 4){
                 $clients = $clients->where('id', Auth::user()->id);
             }

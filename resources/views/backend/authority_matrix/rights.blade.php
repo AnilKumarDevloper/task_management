@@ -28,7 +28,7 @@
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="mb-3">
-                                        <label for="inputcom" class="control-label col-form-label">User Name<b class="text-danger" >*</b></label>
+                                        <label for="inputcom" class="control-label col-form-label">Client Name<b class="text-danger" >*</b></label>
                                         <input type="text" class="form-control" id="inputcom" placeholder="User Name" value="{{$user->name}}" disabled>
                                         <input type="hidden" name="user_id" value="{{$user->id}}">
                                     </div>

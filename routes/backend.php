@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Backend\AdditionalRightsRequestController;
 use App\Http\Controllers\Backend\AuthorityMatrixController;
@@ -25,6 +26,8 @@ Route::middleware('guest')->group(function () {
         Route::get('/', 'SuperAdminLoginCreate')->name('login');
         Route::get('login', 'SuperAdminLoginCreate')->name('login');
         Route::post('login', 'SuperAdminLoginStore')->name('login_store');
+        Route::get('verify-otp/{id}', 'SuperAdminLoginVerifyOtpView')->name('verify_otp_view');
+        Route::post('verify-otp', 'SuperAdminLoginVerifyOtp')->name('verify_otp_submit');
     });
 });
 
@@ -33,6 +36,7 @@ Route::middleware(['auth','verified'])->group(function(){
         Route::get('/admin','DashboardRedirect')->name('backend.dashboard.redirect');
         Route::get('/admin/dashboard','Dashboard')->name('backend.dashboard.view');
     });
+    Route::post('logout', [AuthenticatedSessionController::class, 'destroy'])->name('logout');
  
     Route::controller(EmployeeController::class)->group(function(){
         Route::prefix('/admin/employee')->group(function(){

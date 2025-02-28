@@ -32,6 +32,7 @@
           </div> -->
           <!---search box  end--->
         <div class="row">
+        @if(count($right_requests) > 0)
             <div class="col-sm-12 table_formate_stayle_font overflowbox">
                 <table id="additional_rights_table" class="table table-striped table-bordered text-nowrap dataTable no-footer"
                     role="grid" aria-describedby="zero_config_info">
@@ -42,7 +43,7 @@
                                 style="width: 0px;">SN
                             </th>
                             <th style="width: 0px;" class="sorting text-dark" tabindex="0" aria-controls="zero_config"
-                                rowspan="1" colspan="1" aria-label="Action: activate to sort column ascending">User Name
+                                rowspan="1" colspan="1" aria-label="Action: activate to sort column ascending">Client Name
                             </th>
     
                             <th style="width: 0px;" class="sorting text-dark" tabindex="0" aria-controls="zero_config"
@@ -89,6 +90,9 @@
                 </table>
    
             </div>
+            @else
+                    <center><h3>No Record Available</h3></center>
+                @endif
         </div>
     </div>
 </div> 

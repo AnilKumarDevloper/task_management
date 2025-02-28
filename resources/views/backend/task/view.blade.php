@@ -43,6 +43,14 @@
                                     <lable>Compliance Date</lable>
                                         <input type="text" class="form-control" disabled value="{{$task->compliance_date != '' ? Carbon\Carbon::parse($task->compliance_date)->format('d M, Y') : 'N/A'}}"/>
                                     </div>  
+                                    <div class="col-md-6 mt-3">
+                                    <lable>Company Name</lable>
+                                        <input type="text" class="form-control" disabled value="{{ $company_detail->name }}"/>
+                                    </div>  
+                                    <div class="col-md-6 mt-3">
+                                    <lable>Client Name</lable>
+                                        <input type="text" class="form-control" disabled value="{{ $task->getClient?->name }}"/>
+                                    </div>  
                                 </div>
                                 <br>
                                 <div class="row">
@@ -101,8 +109,8 @@
                                 <li class="list-group-item">
                                     <div class="d-flex justify-content-between align-items-center">
                                         <div>
-                                            <strong>{{$comment->getUser->name}}</strong>
-                                            <small class="text-muted">{{$comment->getUser->email}} {{Carbon\Carbon::parse($comment->created_at)->format('d M, Y')}}</small>
+                                            <strong>{{$comment->getUser?->name}}</strong>
+                                            <small class="text-muted">{{$comment->getUser?->email}} {{Carbon\Carbon::parse($comment->created_at)->format('d M, Y')}}</small>
                                             <p>{{$comment->comment}}</p>
                                         </div>
                                         <div>
@@ -111,7 +119,7 @@
                                         </div>
                                     </div>
                                     <div class="mt-3 reply-form" style="display: none;">
-                                        <h6>Reply to {{$comment->getUser->name}}</h6>
+                                        <h6>Reply to {{$comment->getUser?->name}}</h6>
                                         <form method="POST" action="{{route('backend.task.reply_on_comment')}}">
                                             @csrf
                                             <input type="hidden" name="parent_id" value="{{$comment->id}}">
@@ -132,7 +140,7 @@
                                             @if(count($comment->getReplys) > 0) 
                                             @foreach($comment->getReplys as $reply) 
                                             <li class="list-group-item">
-                                            {{$reply->getUser->name}} {{$reply->getUser->email}} {{Carbon\Carbon::parse($reply->created_at)->format('d M, Y')}}
+                                            {{$reply->getUser?->name}} {{$reply->getUser?->email}} {{Carbon\Carbon::parse($reply->created_at)->format('d M, Y')}}
                                             <br>
                                             {{$reply->comment}}</li> 
                                             @endforeach

@@ -17,8 +17,8 @@ class EmployeeController extends Controller{
         try{
         if(Auth::user()->role_id == 1 || Auth::user()->role_id == 2){
             $search = $request->search; 
-            $users = User::with(['getEmployeeTask'])->where('role_id', 3)
-            ->where('status', 1);
+            $users = User::with(['getEmployeeTask'])->where('role_id', 3);
+            // ->where('status', 1);
             if (!empty($search)) {
                 $users = $users->where(function ($query) use ($search) {
                     $query->where('name', 'LIKE', '%' . $search . '%')
@@ -35,9 +35,9 @@ class EmployeeController extends Controller{
         }else{
             return response()->view('errors.403', [], 403);
         }
-    }catch(\Exception $e){
-        abort('404');
-    }
+        }catch(\Exception $e){
+            abort('404');
+        }
     }
 
  
@@ -101,7 +101,7 @@ class EmployeeController extends Controller{
                 
                 return view('backend.employee.edit', compact('user', 'clients', 'assigned_clients')); 
             }catch(\Exception $e){
-                return $e->getMessage();
+                // return $e->getMessage();
                 abort('404');
             }
         }else{
@@ -143,6 +143,11 @@ class EmployeeController extends Controller{
                       "client_id" => $client
                   ]);
               }
+          }else{
+            User::where('id', $decrypt_id)->update([
+                "clients" => NULL
+            ]);
+            EmployeeAndClient::where('user_id', $decrypt_id)->delete();
           }
         return redirect()->route('backend.employee.index')->with('updated', 'Employee has been updated.');
     }
@@ -165,7 +170,9 @@ class EmployeeController extends Controller{
                 $user_id = $request->user_id;
                 if($status == 1){
                     User::where('id', $user_id)->restore();
+                    User::where('id', $user_id)->update(['status' => 1]);
                 }else{
+                    User::where('id', $user_id)->update(['status' => 0]);
                     User::where('id', $user_id)->delete();
                 } 
                 return response()->json([

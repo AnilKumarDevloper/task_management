@@ -159,7 +159,7 @@
               </div>
               <div class="card opacityClass" style="overflow: hidden;">
                 <div class="card-body text-center">
-                  <h4 class="card-title">User Info</h4>
+                  <h4 class="card-title">Client Info</h4>
                   <div class=""> 
                   @if($right_req->getRaisedBy?->profile != '')
                     <img src="{{url($right_req->getRaisedBy?->profile)}}" width="150" class="rounded-circle" alt="user" />

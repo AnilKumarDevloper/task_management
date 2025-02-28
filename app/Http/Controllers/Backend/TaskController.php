@@ -5,6 +5,7 @@ use App\Events\NotificationEvent;
 use App\Exports\TaskExport;
 use App\Http\Controllers\Controller;
 use App\Models\Backend\AuthorityMatrix;
+use App\Models\Backend\CompanyDetail;
 use App\Models\Backend\Document;
 use App\Models\Backend\DocumentComment;
 use App\Models\Backend\EmployeeAndClient;
@@ -83,7 +84,7 @@ class TaskController extends Controller{
         }
         elseif(Auth::user()->role_id == 3){
             if(Auth::user()->clients != ''){
-                $tasks = $tasks->whereIn('client_id', Auth::user()->clients);
+                $tasks = $tasks->where('assigned_to', Auth::user()->id);
             }else{ 
                 $tasks = $tasks->where('client_id', Auth::user()->client_id);
             }
@@ -185,43 +186,57 @@ class TaskController extends Controller{
         return redirect()->route('backend.task.index')->with('assigned', 'Task has been assigned successfully.');
     }
     public function view($task_id){
-        if(Auth::user()->role_id == 4){
-            $permission = AuthorityMatrix::where('user_id', Auth::user()->id)->where('permission', 'view')->exists();
-            if(!$permission){
-                return view('errors.403');
-            } 
+        try{
+            if(Auth::user()->role_id == 4){
+                $permission = AuthorityMatrix::where('user_id', Auth::user()->id)->where('permission', 'view')->exists();
+                if(!$permission){
+                    return view('errors.403');
+                }
+            }
+            $decrypt_task_id = Crypt::decrypt($task_id); 
+            $task = Task::with(['getEmployee', 'getDocument', 'getTaskDocument', 'getClient:id,name'])->where('id', $decrypt_task_id)->first();
+            $company_detail = CompanyDetail::where('user_id', $task->getClient?->id)->first();
+            $comments = DocumentComment::with(['getUser', 'getReplys'])->where('task_id', $decrypt_task_id)->get();
+            return view('backend.task.view', compact('task', 'comments', 'company_detail'));
+        }catch(\Exception $e){
+            return "Something went wrong";
         }
-        $decrypt_task_id = Crypt::decrypt($task_id); 
-        $task = Task::with(['getEmployee', 'getDocument', 'getTaskDocument'])->where('id', $decrypt_task_id)->first();
-        $comments = DocumentComment::with(['getUser', 'getReplys'])->where('task_id', $decrypt_task_id)->get();
-        return view('backend.task.view', compact('task', 'comments'));
-    } 
+    }
+
     public function edit($task_id){
         if(Auth::user()->role_id == 4){
             $permission = AuthorityMatrix::where('user_id', Auth::user()->id)->where('permission', 'edit')->exists();
             if(!$permission){
                 return view('errors.403');
-            } 
+            }
         }
         $decrypt_id = Crypt::decrypt($task_id);
         $task = Task::with('getClient', 'getEmployee', 'getTaskDocument')->where('id', $decrypt_id)->first();
-        $employees = User::where('role_id', 3)->get();
-        $financial_years = FinancialYearList::where('status', 1)->get();
-        $clients = User::where('role_id', 4);
+        $employees = User::select('*')->whereJsonContains('clients', $task->client_id);
         if(Auth::user()->role_id == 3){
-            $clients = $clients->where('id', Auth::user()->client_id);
+            $employees = $employees->where('id', $task->assigned_to);
+        }else if(Auth::user()->role_id == 4){
+            $employees = $employees->where('id', $task->assigned_to);
+        }
+        $employees = $employees->get();
+        $financial_years = FinancialYearList::where('status', 1)->get();
+        $clients = User::with('getCompanyDetail')->where('role_id', 4);
+        if(Auth::user()->role_id == 3){
+            $clients = $clients->whereIn('id', Auth::user()->clients);
         }
         $clients = $clients->where('status', 1)->get();
         return view('backend.task.edit', compact('task','employees', 'financial_years', 'clients'));
     }
-    public function update(Request $request, $task_id){ 
+    public function update(Request $request, $task_id){
+        // return $request;
         if(Auth::user()->role_id == 1 || Auth::user()->role_id == 2 || Auth::user()->role_id == 3){
             $validate = $request->validate([
                 "employee" => ["required"],
                 "client" => ["required"],
                 "year" => ["required"],
                 "month" => ["required"], 
-            ]); 
+            ]);
+            
             $task = Task::where('id', $task_id)->update([
                 'title'=> $request->title,
                 "assigned_to" => $request->employee,
@@ -236,16 +251,22 @@ class TaskController extends Controller{
                 "current_status" => $request->current_status
             ]); 
             if($request->compliance_date != ''){
-                $task = Task::where('id', $task_id)->update([  
+                $task = Task::where('id', $task_id)->update([
                     "current_status" => 'completed'
-                ]); 
+                ]);
             }
+            try{
             $task_documents = TaskDocument::where('task_id', $task_id)->pluck('id')->toArray();
+            $requestDocuments = $request->documents ?? [];
             foreach($task_documents as $doc){
-               if(!in_array($doc, $request->documents)){
+               if(!in_array($doc, $requestDocuments)){
                    TaskDocument::where('id', $doc)->delete();
                }
             }
+            }catch(\Exception $e){
+                return "Something went wrong.";
+            }
+
             if(Auth::user()->role_id != 4){
                $task = Task::where('id', $task_id)->update([
                    'amended_by' => Auth::user()->id,
@@ -266,7 +287,8 @@ class TaskController extends Controller{
                         'file_path' => 'client_data/tasks'
                     ]);  
                 }   
-            }      
+            }   
+        
         }else{
             Task::where('id', $task_id)->update([
                 "current_status" => $request->current_status, 
@@ -364,27 +386,33 @@ class TaskController extends Controller{
         $employees = $employees->get();
         $clients = User::with(['getEmployeeAndClient', 'getCompanyDetail'])->where('role_id', 4)->get();
         if(Auth::user()->role_id == 3){
-            $clients = $clients->where('id', Auth::user()->client_id);
+            $clients = $clients->whereIn('id', Auth::user()->clients);
         }  
         $financial_years = FinancialYearList::where('status', 1)->get();
         return view('backend.task.assign_task', compact('employees',
          'financial_years', 'clients'));
     }
     public function viewTaskDoc($doc_id){
-        $decrypt_doc_id = Crypt::decrypt($doc_id);
-        $document = TaskDocument::where('id', $decrypt_doc_id)->first();
-        $file_type = pathinfo($document->file, PATHINFO_EXTENSION);
-        return view('backend.task.view_doc', compact('document', 'file_type'));
+        try{ 
+            $decrypt_doc_id = Crypt::decrypt($doc_id);
+            $document = TaskDocument::where('id', $decrypt_doc_id)->first();
+            $file_type = pathinfo($document->file, PATHINFO_EXTENSION);
+            return view('backend.task.view_doc', compact('document', 'file_type'));
+        }catch(\Exception $e){
+            return "Something went wrong";
+        }
     }
     public function downloadTaskDoc($doc_id){
-        $decrypt_doc_id = Crypt::decrypt($doc_id);
-        $document = TaskDocument::where('id', $decrypt_doc_id)->first();
-        return response()->download($document->file_path.'/'.$document->file, $document->file_original_name);
+        try{ 
+            $decrypt_doc_id = Crypt::decrypt($doc_id);
+            $document = TaskDocument::where('id', $decrypt_doc_id)->first();
+            return response()->download($document->file_path.'/'.$document->file, $document->file_original_name);
+        }catch(\Exception $e){
+            return "Something went wrong. Please try again later.";
+        }
     }
 
-  
- 
-
+   
     public function sendTaskReminder(Request $request){
         try{
             $task_id = $request->task_id; 

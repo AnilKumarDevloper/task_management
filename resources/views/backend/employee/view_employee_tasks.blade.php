@@ -27,31 +27,45 @@
                                 <div class="row lable_font"> 
                                 <h5>Employee Profile</h5>
                                     <div class="col-md-4">
-                                        <label class="control-label">Name</label> <input class="form-control form-white input_border" name="user_name" placeholder="User Name" type="text" value="{{$user->name ?? ''}}" disabled>
+                                        <label class="control-label">Employee Name</label> <input class="form-control form-white input_border" name="user_name" placeholder="User Name" type="text" value="{{$user->name ?? ''}}" disabled>
                                     </div>
                                     <div class="col-md-4">
-                                        <label class="control-label">User Phone</label>
+                                        <label class="control-label">Employee Phone</label>
                                         <input class="form-control form-white input_border" name="phone" placeholder="User Phone" type="text" value="{{$user->phone ?? ''}}" disabled>
                                     </div>
                                     <div class="col-md-4 mb-5">
-                                        <label class="control-label">User Email</label>
+                                        <label class="control-label">Employee Email</label>
                                         <input class="form-control form-white input_border" name="email" placeholder="User Email" type="email" value="{{$user->email ?? ''}}" disabled>
                                     </div>  
                                     <hr>
                                     <div class="col-md-12 mt-4">
-                                    <h5>Assigned Clients</h5>
+                                    <h5>Assigned Clients/Company</h5>
                                         @if($user->clients != '')
+                                        <table id="zero_config" class="table table-striped table-bordered text-nowrap dataTable no-footer"
+                                            role="grid" aria-describedby="zero_config_info">
+                                            <thead>
+                                                <tr role="row" class="subHeaderTable">
+                                                    <th class="sorting_asc" tabindex="0" aria-controls="zero_config" rowspan="1" colspan="1" aria-sort="ascending" aria-label="SN: activate to sort column descending" style="width: 0px;">Company Name</th>
+                                                    <th class="sorting" tabindex="0" aria-controls="zero_config" rowspan="1" colspan="1" aria-label="Department Name: activate to sort column ascending" style="width: 0px;">Client Name</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
                                             @php
-    $clients = App\Models\User::with('getCompanyDetail')->whereIn('id', $user->clients)->get();
+                                                $clients = App\Models\User::with('getCompanyDetail')->whereIn('id', $user->clients)->get();
                                             @endphp
+                                            
                                             @foreach($clients as $index => $client)
-                                               <div style="padding:3px 5px; border:1px solid gray" class="mb-2">
-                                                  <a href="{{route('backend.client.view', [Crypt::encrypt($client->id)])}}">{{$client->getCompanyDetail->name}}</a>
-                                                </div>
+                                            <tr>
+                                                <td><a href="{{route('backend.client.view', [Crypt::encrypt($client->id)])}}">{{$client->getCompanyDetail->name}}</a></td>
+                                                <td><a href="{{route('backend.client.view', [Crypt::encrypt($client->id)])}}">{{$client->name}}</a></td>
+                                            </tr>
+                                             
                                                 @if($index != count($clients) - 1)
                                                 
                                                 @endif
                                             @endforeach 
+                                            </tbody>
+                                            </table>
                                             @else
                                             No Client Assigned
                                             @endif 

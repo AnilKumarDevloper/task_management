@@ -24,19 +24,19 @@
                             <div class="col-md-4 mt-4">
                                 <label class="control-label">Compliance</label>
                                 <input type="text" class="form-control" name="title" value="{{$task->title ?? ''}}"
-                                    placeholder="Compliance" maxlength="50" {{Auth::user()->role_id == 4 ? "disabled" : ""}}>
+                                    placeholder="Compliance" maxlength="50" {{Auth::user()->role_id == 4 ? "disabled" : ""}} required>
                                 @error('title')
                                     <p style="color:red;">{{ $message }}</p>
                                 @enderror
                             </div>
                 
                             <div class="col-md-4 mt-4">
-                                <label class="control-label">Select Client</label>
+                                <label class="control-label">Select Company</label>
                                 <select class="form-control" name="client" id="client" style="background: white;" required
                                     {{Auth::user()->role_id == 4 ? "disabled" : ""}}>
                                     <!-- <option value="">--Select--</option>  -->
                                     @foreach($clients as $client)
-                                        <option value="{{$client->id}}" {{$task->client_id == $client->id ? "selected" : ""}}>{{$client->name}}
+                                        <option value="{{$client->id}}" {{$task->client_id == $client->id ? "selected" : ""}}>{{$client->getCompanyDetail->name}}
                                         </option>
                                     @endforeach
                                 </select>
@@ -44,23 +44,40 @@
                                     <p style="color:red;">{{ $message }}</p>
                                 @enderror
                             </div>
-                
+
                             <div class="col-md-4 mt-4">
+                                <label class="control-label">Select Employee</label>
+                                <select class="form-control" name="employee" id="employee" style="background: white;" required>
+                                @if(Auth::user()->role_id == 1)   
+                                <option value="">--Select--</option>
+                                @endif
+                                    @foreach($employees as $employee)
+                                    <option value="{{ $employee->id }}" {{ $employee->id == $task->assigned_to ? "selected":"" }}>{{ $employee->name }}</option>
+                                    @endforeach
+                                </select>
+                                @error('employee')  
+                                    <p style="color:red;">{{ $message }}</p>
+                                @enderror
+                            </div>
+
+
+                
+                            <!-- <div class="col-md-4 mt-4">
                                 <label class="control-label">Employee Name</label>
                                 <input type="text" class="form-control" id="employee_name" value="{{$task->getEmployee?->name}}"
-                                    disabled {{Auth::user()->role_id == 4 ? "disabled" : ""}}>
-                            </div>
+                                    disabled {{Auth::user()->role_id == 4 ? "disabled" : ""}} required>
+                            </div> -->
                 
-                            <div class="col-md-4 mt-4" style="display:none;">
+                            <!-- <div class="col-md-4 mt-4" style="display:none;">
                                 <label class="control-label">Select Employee</label>
                                 <select class="form-control" name="employee" id="employee" style="background: white;"
-                                    {{Auth::user()->role_id == 4 ? "disabled" : ""}}>
+                                    {{Auth::user()->role_id == 4 ? "disabled" : ""}} required>
                                     <option value="{{$task->getEmployee?->id}}">{{$task->getEmployee?->name}}</option>
                                 </select>
                                 @error('client')
                                     <p style="color:red;">{{ $message }}</p>
                                 @enderror
-                            </div>
+                            </div> -->
                             <div class="col-md-4 mt-4">
                                 <label class="control-label">Select Financial Year</label>
                                 <select class="form-control" name="year" style="background: white;" required {{Auth::user()->role_id == 4 ? "disabled" : ""}}>
@@ -98,15 +115,15 @@
                             <div class="col-md-4 mt-4">
                                 <label class="control-label">Start Date</label>
                                 <input type="date" class="form-control form-white" name="start_date" id="start_date"
-                                    value="{{Carbon\Carbon::parse($task->start_date)->format('Y-m-d')}}" {{Auth::user()->role_id == 4 ? "disabled" : ""}}>
+                                    value="{{Carbon\Carbon::parse($task->start_date)->format('Y-m-d')}}" {{Auth::user()->role_id == 4 ? "disabled" : ""}} required>
                                 @error('start_date')
                                     <p style="color:red;">{{ $message }}</p>
                                 @enderror
                             </div>
                             <div class="col-md-4 mt-4">
                                 <label class="control-label">Due Date</label>
-                                <input type="date" class="form-control form-white" name="due_date" id="due_date"
-                                    value="{{Carbon\Carbon::parse($task->due_date)->format('Y-m-d')}}" {{Auth::user()->role_id == 4 ? "disabled" : ""}}>
+                                <input type="date" class="form-control form-white" name="due_date" id="end_date"
+                                    value="{{Carbon\Carbon::parse($task->due_date)->format('Y-m-d')}}" {{Auth::user()->role_id == 4 ? "disabled" : ""}} required>
                                 @error('due_date')
                                     <p style="color:red;">{{ $message }}</p>
                                 @enderror
@@ -134,7 +151,7 @@
                                 <lable>Select Current Status</lable>
                                 <select name="current_status" style="width: 100%; height: 36px">
                                     <option value="pending" {{$task->current_status == "pending" ? "selected" : ""}}>Pending</option>
-                                    <option value="inprocess" {{$task->current_status == "inprocess" ? "selected" : ""}}>Inprocess</option>
+                                    <option value="inprocess" {{$task->current_status == "inprocess" ? "selected" : ""}}>In Process</option>
                                     <option value="completed" {{$task->current_status == "completed" ? "selected" : ""}}>Completed</option>
                                 </select>
                             </div>
@@ -177,56 +194,59 @@
  
     @section('javascript_section')
     <script>
-         $(document).on("change", "#client", async function(){
-                $("#employee").empty(); 
+           $(document).on("change", "#client", async function(){
+            let employees_html = '<option value="">--Select--</option>';
+                $("#employee").empty();
                 let client_id = $(this).val();
-                console.log(client_id);
-                let url = "{{route('api.get_employee')}}";  
+                let url = "{{route('api.get_employee')}}";
                 let response = await fetch(`${url}?client_id=${client_id}`);
-                let responseData = await response.json(); 
-                console.log(responseData); 
-                $("#employee_name").val(responseData.employee.name);
-                $("#employee").append(`<option value="${responseData.employee.id}">${responseData.employee.name}</option>`); 
+                let responseData = await response.json();
+                responseData.employee.forEach(element => {
+                    employees_html += `<option value="${element.id}">${element.name}</option>`;
+                });
+                $("#employee").append(employees_html);
             });
 
-        //     document.addEventListener("DOMContentLoaded", function () {
-        //     const startDateInput = document.getElementById("start_date");
-        //     const endDateInput = document.getElementById("end_date"); 
-        //     const today = new Date().toISOString().split("T")[0];
-        //     startDateInput.setAttribute("min", today); 
-        //     endDateInput.disabled = true; 
-        //     startDateInput.addEventListener("change", function () {
-        //         if (startDateInput.value) { 
-        //             endDateInput.disabled = false; 
-        //             endDateInput.setAttribute("min", startDateInput.value);
-        //         } else { 
-        //             endDateInput.disabled = true;
-        //             endDateInput.value = "";
-        //         }
-        //     });
-        // });
-
-        //    $(document).on("change", "#employee", async function(){
-        //     $("#client").empty();
-        //     // $("#main_folder").append(`<option value="">--Select--</option>`)
-        //     let employee_id = $(this).val();
-        //     let url = "{{route('api.get_client_list')}}";  
-        //     let response = await fetch(`${url}?employee_id=${employee_id}`);
-        //     let responseData = await response.json(); 
-        //     $("#client_name").val(responseData.clients[0].name); 
-        //     responseData.clients.forEach(element=>{
-        //         $("#client").append(`<option value="${element.id}">${element.name}</option>`);
-        //     });
-        // });
+            document.addEventListener("DOMContentLoaded", function () {
+            const startDateInput = document.getElementById("start_date");
+            const endDateInput = document.getElementById("end_date"); 
+            const complianceDateInput = document.getElementById("compliance_date");
+            const start_date = startDateInput.value;
+            const end_date = endDateInput.value;
+            const compliance_date = complianceDateInput.value;
+ 
+            const today = new Date().toISOString().split("T")[0];
+            endDateInput.setAttribute("min", startDateInput.value);
+            complianceDateInput.setAttribute("min", startDateInput.value);
+            startDateInput.addEventListener("change", function () {
+                if(startDateInput.value){
+                    if(endDateInput.value && startDateInput.value > endDateInput.value){
+                        endDateInput.value = "";
+                    }
+                    if(complianceDateInput.value && startDateInput.value > complianceDateInput.value){
+                        complianceDateInput.value = "";
+                    }
+                    endDateInput.disabled = false; 
+                    complianceDateInput.disabled = false; 
+                    endDateInput.setAttribute("min", startDateInput.value);
+                    complianceDateInput.setAttribute("min", startDateInput.value);
+                }else{
+                    endDateInput.disabled = true;
+                    complianceDateInput.disabled = true; 
+                    endDateInput.value = "";
+                    complianceDateInput.value = "";
+                }
+            });
+        });
     </script>
     @if(Session::has('task_updated')) 
-            <script>
-                Swal.fire({
-                    title: "Success",
-                    text: "{{Session::get('task_updated')}}",
-                    icon: "success"
-                });
-            </script>  
+        <script>
+            Swal.fire({
+                title: "Success",
+                text: "{{Session::get('task_updated')}}",
+                icon: "success"
+            });
+        </script>  
     @endif 
 
     <script>

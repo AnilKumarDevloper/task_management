@@ -117,7 +117,7 @@
             <h5 class="pt-3">Update Current Status</h5>
             <select class="form-control" name="current_status" id="current_status" style="background: white;">
               <option value="1" {{$ticket->resolution_status == 1 ? 'selected' : ''}}>Pending</option> 
-              <option value="2" {{$ticket->resolution_status == 2 ? 'selected' : ''}}>Inprogress</option> 
+              <option value="2" {{$ticket->resolution_status == 2 ? 'selected' : ''}}>In Process</option> 
               <option value="3" {{$ticket->resolution_status == 3 ? 'selected' : ''}}>Closed</option> 
             </select> 
           </div>
@@ -151,7 +151,7 @@
 
       <div class="card opacityClass">
         <div class="card-body text-center">
-          <h4 class="card-title">User Info</h4>
+          <h4 class="card-title">Client Info</h4>
           <div class="">
             @if($ticket->getRaisedBy?->profile != '')
               <img src="{{url($ticket->getRaisedBy?->profile)}}" width="150" class="rounded-circle" alt="user" />
@@ -173,7 +173,7 @@
             <hr />
             <div class="col-6">
               <h3 class="fw-bold">{{$inprogress_ticket_count ?? '0'}}</h3>
-              <h6>Inprogress</h6>
+              <h6>In Process</h6>
             </div>
             <div class="col-6">
               <h3 class="fw-bold">{{$close_ticket_count ?? '0'}}</h3>
@@ -208,7 +208,7 @@
         if(current_status == 1){
           $("#ticket_status").html(`<b class="badge bg-danger">Pending</b>`);
         }else if(current_status ==2){
-          $("#ticket_status").html(`<b class="badge bg-warning">In Progress</b>`);
+          $("#ticket_status").html(`<b class="badge bg-warning">In Process</b>`);
         }else if(current_status == 3){
           $("#ticket_status").html(`<b class="badge bg-success" >Closed</b>`);
         }

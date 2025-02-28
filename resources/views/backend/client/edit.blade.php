@@ -60,8 +60,8 @@
                     </div>
         
                     <div class="col-md-4 mt-4">
-                        <label class="control-label">User Name</label>
-                        <input class="form-control form-white input_border" name="user_name" placeholder="User Name" type="text"
+                        <label class="control-label">Client Name</label>
+                        <input class="form-control form-white input_border" name="user_name" placeholder="Client Name" type="text"
                             value="{{$user->name ?? ''}}">
                         @error('user_name')
                             <p style="color:red;">{{$message}}</p>
@@ -69,8 +69,8 @@
                     </div>
         
                     <div class="col-md-4 mt-4">
-                        <label class="control-label">User Phone</label>
-                        <input class="form-control form-white input_border" name="phone" placeholder="User Phone" type="text"
+                        <label class="control-label">Client Phone</label>
+                        <input class="form-control form-white input_border" name="phone" placeholder="Client Phone" type="text"
                             value="{{$user->phone ?? ''}}">
                         @error('phone')
                             <p style="color:red;">{{$message}}</p>
@@ -78,8 +78,8 @@
                     </div>
         
                     <div class="col-md-4 mt-4">
-                        <label class="control-label">User Email</label>
-                        <input class="form-control form-white input_border" name="email" placeholder="User Email" type="email"
+                        <label class="control-label">Client Email</label>
+                        <input class="form-control form-white input_border" name="email" placeholder="Client Email" type="email"
                             value="{{$user->email ?? ''}}">
                         @error('email')
                             <p style="color:red;">{{$message}}</p>

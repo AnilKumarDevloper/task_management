@@ -107,7 +107,7 @@
      <div class="card opacityClass" style="border-radius: 10px;  padding: 20px">
             <div class="row">
                 <div class="col-sm-12 overflowbox table_formate_stayle_font">
-                    <h2>Recent Added Task</h2>
+                    <h2>Compliances</h2>
                  
                     @if($recent_tasks != null && count($recent_tasks) > 0)
                         <table id="recent_task_table" class="table table-striped table-bordered text-nowrap dataTable no-footer" role="grid"
@@ -166,7 +166,7 @@
                                             @if($task->current_status == 'pending')
                                                 <b class="badge bg-danger">Pending</b> 
                                             @elseif($task->current_status == 'inprocess')
-                                                <b class="badge bg-warning">Inprocess</b>
+                                                <b class="badge bg-warning">In Process</b>
                                             @else
                                                 <b class="badge bg-success">Completed</b>
                                             @endif 
@@ -210,13 +210,13 @@
                                                       @endif
 
                                                       @if($delete)
-                                                      <span><a href="javascript:void(0)" data-task_id="{{$task->id}}" title="Delete" id="delete_btn"><i class="ri-delete-bin-5-line"></i></a></span>
+                                                      <span><a href="javascript:void(0)" data-task_id="{{$task->id}}" title="Delete" id="destroy_btn"><i class="ri-delete-bin-5-line"></i></a></span>
                                                       @endif
 
                                                       @else
                                                       <span><a href="{{route('backend.task.edit', [Crypt::encrypt($task->id)])}}" title="Edit"><i class="ri-pencil-line"></i></a></span>
                                                       <span><a href="{{route('backend.task.view', [Crypt::encrypt($task->id)])}}" title="View"><i class="ri-eye-line"></i></a></span>
-                                                      <span><a href="javascript:void(0)" data-task_id="{{$task->id}}" title="Delete" id="delete_btn"><i class="ri-delete-bin-5-line"></i></a></span>
+                                                      <span><a href="javascript:void(0)" data-task_id="{{$task->id}}" title="Delete" id="destroy_btn"><i class="ri-delete-bin-5-line"></i></a></span>
                                                       @endif 
                                                     </div>
                                                   </div>
@@ -239,6 +239,36 @@
             $(document).ready(function() {
             $('#recent_task_table').DataTable();
         });
+
+       
+            $(document).on("click", "#destroy_btn", async function(){
+                console.log('test');
+                let task_id = $(this).data('task_id');
+                let url = "{{route('backend.task.destroy')}}";
+                Swal.fire({
+                title: "Are you sure?",
+                text: "You won't be able to revert this!",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#3085d6",
+                cancelButtonColor: "#d33",
+                confirmButtonText: "Yes, delete it!"
+                }).then(async (result) => {
+                    if (result.isConfirmed){
+                        let response = await fetch(`${url}?task_id=${task_id}`);
+                        let responseData = await response.json();
+                        if(responseData.status == "success"){
+                            Swal.fire({
+                                title: "Deleted!",
+                                text: "Your file has been deleted.",
+                                icon: "success"
+                            }).then(()=>{
+                                window.location.reload();
+                            });
+                        }
+                    }
+                });
+            });
         </script>
     @endsection
  

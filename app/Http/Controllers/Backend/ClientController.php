@@ -30,7 +30,7 @@ class ClientController extends Controller{
             $users = $users->whereIn('id', $clients);
             // $users = $users->where('id', Auth::user()->client_id);
         } 
-        $users = $users->where('status', 1)->withTrashed()->orderBy('id', 'desc')->get();
+        $users = $users->withTrashed()->orderBy('id', 'desc')->get();
         return view('backend.client.index', compact('users'));
     }
     public function create(){
@@ -227,7 +227,9 @@ class ClientController extends Controller{
             $status_value = $request->status_value;
             if($status_value == 1){
                 User::where('id', $user_id)->restore();
+                User::where('id', $user_id)->update(['status' => 1]);
             }else{
+                User::where('id', $user_id)->update(['status' => 0]);
                 User::where('id', $user_id)->delete();
             }
             return response()->json([

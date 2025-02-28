@@ -3,7 +3,10 @@
 namespace App\Exceptions;
 
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use Symfony\Component\HttpKernel\Exception\MethodNotAllowedHttpException;
 use Throwable;
+use Illuminate\Session\TokenMismatchException;
+
 
 class Handler extends ExceptionHandler
 {
@@ -45,4 +48,17 @@ class Handler extends ExceptionHandler
             //
         });
     }
+
+    public function render($request, Throwable $exception){
+        if ($exception instanceof TokenMismatchException) {
+            if ($request->is('logout')) {
+                return redirect('/')->with('error', 'Session expired. Please log in again.');
+            }
+            return response()->view('errors.419', [], 419);
+        }
+        if($exception instanceof MethodNotAllowedHttpException) {
+            return redirect('/')->with('error', 'Invalid request method.'); 
+        }
+    return parent::render($request, $exception);
+}
 }

@@ -112,7 +112,7 @@
                                                   @if($task->current_status == 'pending')
                                                     <b class="badge bg-danger">Pending</b> 
                                                   @elseif($task->current_status == 'inprocess')
-                                                    <b class="badge bg-warning">Inprocess</b>
+                                                    <b class="badge bg-warning">In Process</b>
                                                   @else
                                                     <b class="badge bg-success">Completed</b>
                                                   @endif
@@ -187,7 +187,7 @@
           @endforeach 
         </div>
       @else
-        <center><h3>No Task Available</h3></center>
+        <center><h3>No Record Available</h3></center>
         @endif 
       </div>
     </div>

@@ -23,14 +23,14 @@
                 
                             <div class="col-md-4 mt-4">
                                 <label class="control-label">Compliance</label>
-                                <input type="text" class="form-control" name="title" placeholder="Compliance" maxlength="50">
+                                <input type="text" class="form-control" name="title" placeholder="Compliance" maxlength="50" required>
                                 @error('title')
                                     <p style="color:red;">{{ $message }}</p>
                                 @enderror
                             </div>
                 
                             <div class="col-md-4 mt-4">
-                                <label class="control-label">Select Client</label>
+                                <label class="control-label">Select Company</label>
                                 <select class="form-control" name="client" id="client" style="background: white;" required>
                                     <option value="">--Select--</option>
                                     @foreach($clients as $client)
@@ -149,7 +149,7 @@
                 let client_id = $(this).val(); 
                 let url = "{{route('api.get_employee')}}";  
                 let response = await fetch(`${url}?client_id=${client_id}`);
-                let responseData = await response.json();
+                let responseData = await response.json(); 
                 console.log(responseData);
                 responseData.employee.forEach(element => {
                     $("#employee").append(`<option value="${element.id}">${element.name}</option>`); 
@@ -220,21 +220,31 @@
 
 
         document.addEventListener("DOMContentLoaded", function () {
-            const startDateInput = document.getElementById("start_date");
-            const endDateInput = document.getElementById("due_date"); 
-            const today = new Date().toISOString().split("T")[0];
-            startDateInput.setAttribute("min", today); 
-            endDateInput.disabled = true; 
-            startDateInput.addEventListener("change", function () {
-                if (startDateInput.value) { 
-                    endDateInput.disabled = false; 
-                    endDateInput.setAttribute("min", startDateInput.value);
-                } else { 
-                    endDateInput.disabled = true;
-                    endDateInput.value = "";
-                }
-            });
-        });
+    const startDateInput = document.getElementById("start_date");
+    const dueDateInput = document.getElementById("due_date");
+    const complianceDateInput = document.getElementById("compliance_date");
+
+    const today = new Date().toISOString().split("T")[0];
+    startDateInput.setAttribute("min", today);
+
+    dueDateInput.disabled = true;
+    complianceDateInput.disabled = true;
+
+    startDateInput.addEventListener("change", function () {
+        if(startDateInput.value){
+            dueDateInput.disabled = false;
+            complianceDateInput.disabled = false; 
+            dueDateInput.setAttribute("min", startDateInput.value);
+            complianceDateInput.setAttribute("min", startDateInput.value);
+        }else{
+            dueDateInput.disabled = true;
+            complianceDateInput.disabled = true; 
+            dueDateInput.value = "";
+            complianceDateInput.value = "";
+        }
+    });
+});
+
  
     </script>
 @endsection

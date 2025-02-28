@@ -40,14 +40,14 @@
                             <input class="form-control form-white input_border" name="company_address" placeholder="Company Address" type="text" value="{{$user->GetCompanyDetail?->address}}" disabled>
                         </div>
                         <div class="col-md-4 mt-4">
-                            <label class="control-label">User Name</label> <input class="form-control form-white input_border" name="user_name" placeholder="User Name" type="text" value="{{$user->name ?? ''}}" disabled>
+                            <label class="control-label">Client Name</label> <input class="form-control form-white input_border" name="user_name" placeholder="User Name" type="text" value="{{$user->name ?? ''}}" disabled>
                         </div>
                         <div class="col-md-4 mt-4">
-                            <label class="control-label">User Phone</label>
+                            <label class="control-label">Client Phone</label>
                             <input class="form-control form-white input_border" name="phone" placeholder="User Phone" type="text" value="{{$user->phone ?? ''}}" disabled>
                         </div>
                         <div class="col-md-4 mt-4">
-                            <label class="control-label">User Email</label>
+                            <label class="control-label">Client Email</label>
                             <input class="form-control form-white input_border" name="email" placeholder="User Email" type="email" value="{{$user->email ?? ''}}" disabled>
                         </div>
                         <div class="col-md-4 mt-4">

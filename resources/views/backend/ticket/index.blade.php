@@ -38,8 +38,8 @@
           </div> -->
         
         <div class="row">
+            @if(count($tickets) > 0)
             <div class="col-sm-12 overflowbox table_formate_stayle_font">
-                @if(count($tickets) > 0)
                     <table id="ticket_table" class="table table-striped table-bordered text-nowrap dataTable no-footer"role="grid" aria-describedby="zero_config_info">
                         <thead>
                             <tr role="row" class="subHeaderTable">
@@ -88,7 +88,7 @@
                                         @if($ticket->resolution_status == 1)
                                             <b class="badge bg-danger">Pending</b>
                                         @elseif($ticket->resolution_status == 2) 
-                                            <span class="badge bg-warning">In Progress</span>
+                                            <span class="badge bg-warning">In Process</span>
                                         @elseif($ticket->resolution_status == 3)
                                             <b class="badge bg-success">Closed</b>
                                         @endif
@@ -118,10 +118,10 @@
                         </tbody>
                     </table>
 
+                </div>
                 @else
-                    <p>No Ticket Found</p>
+                    <center><h3>No Record Available</h3></center>
                 @endif
-            </div>
         </div>
           
     </div>

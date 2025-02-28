@@ -42,9 +42,11 @@
     @endphp
 
     <div class="row">
+        @if(count($users) > 0)
         <div class="col-sm-12 table_formate_stayle_font overflowbox">
             @php $sn = 1;
             @endphp
+
             <table id="zero_config" class="table table-striped table-bordered text-nowrap dataTable no-footer"
                 role="grid" aria-describedby="zero_config_info">
                 <thead>
@@ -53,7 +55,7 @@
                         <th class="sorting" tabindex="0" aria-controls="zero_config" rowspan="1" colspan="1" aria-label="Department Name: activate to sort column ascending" style="width: 0px;">Name</th>
                         <th style="width: 0px;" class="sorting" tabindex="0" aria-controls="zero_config" rowspan="1" colspan="1" aria-label="Action: activate to sort column ascending">Phone</th>
                         <th style="width: 0px;" class="sorting" tabindex="0" aria-controls="zero_config" rowspan="1" colspan="1" aria-label="Action: activate to sort column ascending"> Email</th>
-                        <th style="width: 0px;" class="sorting" tabindex="0" aria-controls="zero_config" rowspan="1" colspan="1" aria-label="Action: activate to sort column ascending"> Client</th>
+                        <th style="width: 0px;" class="sorting" tabindex="0" aria-controls="zero_config" rowspan="1" colspan="1" aria-label="Action: activate to sort column ascending"> Clients</th>
                         <th style="width: 0px;" class="sorting" tabindex="0" aria-controls="zero_config" rowspan="1" colspan="1" aria-label="Action: activate to sort column ascending"> Total Task</th>
                         <th style="width:0px;" class="sorting" tabindex="0" aria-controls="zero_config" rowspan="1" colspan="1" aria-label="Action: activate to sort column ascending"> Status</th>
                         <th style="width: 50px" class="sorting" tabindex="0" aria-controls="zero_config" rowspan="1" colspan="1" aria-label="Action: activate to sort column ascending">Action</th>
@@ -108,8 +110,12 @@
 
                 </tbody>
             </table>
+           
  
         </div>
+        @else
+                <center><h3>No Record Available</h3></center>
+            @endif
     </div>
 
 

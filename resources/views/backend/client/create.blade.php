@@ -57,8 +57,8 @@
                         @enderror
                     </div>
                     <div class="col-md-4 mt-4">
-                        <label class="control-label">User Name</label>
-                        <input class="form-control form-white input_border" name="user_name" placeholder="User Name" type="text"
+                        <label class="control-label">Client Name</label>
+                        <input class="form-control form-white input_border" name="user_name" placeholder="Client Name" type="text"
                             value="{{old('user_name')}}" oninput="capitalizeEachWord(this)">
                         @error('user_name')
                             <p style="color:red;">{{$message}}</p>
@@ -66,8 +66,8 @@
                     </div>
         
                     <div class="col-md-4 mt-4">
-                        <label class="control-label">User Phone</label>
-                        <input class="form-control form-white input_border" name="phone" placeholder="User Phone" type="tel"
+                        <label class="control-label">Client Phone</label>
+                        <input class="form-control form-white input_border" name="phone" placeholder="Client Phone" type="tel"
                             value="{{old('phone')}}" maxlength="10" minlength="10" pattern="\d{10}"
                             oninput="validatePhone(this)">
                         @error('phone')
@@ -76,8 +76,8 @@
                     </div>
         
                     <div class="col-md-4 mt-4">
-                        <label class="control-label">User Email</label>
-                        <input class="form-control form-white input_border" name="email" placeholder="User Email" type="email"
+                        <label class="control-label">Client Email</label>
+                        <input class="form-control form-white input_border" name="email" placeholder="Client Email" type="email"
                             value="{{old('email')}}">
                         @error('email')
                             <p style="color:red;">{{$message}}</p>

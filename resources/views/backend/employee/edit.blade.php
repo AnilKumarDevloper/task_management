@@ -27,17 +27,17 @@
                 @csrf
                 <div class="row lable_font">
                     <div class="col-md-4 mt-4">
-                        <label class="control-label">Name</label>
+                        <label class="control-label">Employee Name</label>
                         <input type="text" name="name" class="form-control form-white input_border"
                             placeholder="Your name" value="{{$user->name ?? ''}}" required>
                     </div>
                     <div class="col-md-4 mt-4">
-                        <label class="control-label">Email</label>
+                        <label class="control-label">Employee Email</label>
                         <input name="email" class="form-control form-white input_border" placeholder="email id"
                             type="email" value="{{$user->email ?? ''}}" required>
                     </div>
                     <div class="col-md-4 mt-4">
-                        <label class="control-label">Phone Number</label>
+                        <label class="control-label">Employee Phone Number</label>
                         <input type="number" name="phone" class="form-control form-white input_border"
                             placeholder="Phone Number" value="{{$user->phone ?? ''}}" required>
                     </div>
@@ -64,7 +64,7 @@
 
                     <!---new add selector --->
                     <div class="col-4 mt-4"> 
-                        <label for="clients" id="selectoptions" class="control-label">Select Client:</label>
+                        <label for="clients" id="selectoptions" class="control-label">Select Company:</label>
                         <div class="">
                             <select class="select2 form-control select2-hidden-accessible" multiple=""
                                 style="height: 36px; width: 100%" data-select2-id="13" tabindex="-1" aria-hidden="true" name="clients[]">

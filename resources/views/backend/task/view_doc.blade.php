@@ -11,17 +11,22 @@
                     </ol>
                 </nav>
                 <h3 class="mb-0 fw-bold">{{$document->file_original_name}}</h3> 
-            </div> 
+            </div>
+             @php
+                $doc_availability = public_path($document->file_path.'/'.$document->file);
+            @endphp
+            @if(file_exists($doc_availability))
             <div class="col-lg-4 col-md-6 d-none d-md-flex align-items-center justify-content-end">
-                <a href="{{route('backend.task.download_task_doc', [Crypt::encrypt($document->id)])}}"
-                class="btn d-flex align-items-center justify-content-center d-block w-100 btn-info waves-effect waves-light">
+                <a href="{{route('backend.task.download_task_doc', [Crypt::encrypt($document->id)])}}" class="btn d-flex align-items-center justify-content-center d-block w-100 btn-info waves-effect w-light">
                 <i class="ri-download-2-fill fs-6 me-2"></i> Download</a>
-                </div>
+            </div>
+            @endif
         </div>
     </div> 
     
     <div class="container-fluid">
         <div class="row" id="addFolderHere"> 
+         @if(file_exists($doc_availability)) 
             @if($file_type == 'doc' || $file_type == 'docx' || $file_type == 'xls' || $file_type == 'xlsx')
             <div class="col-12" style="position: relative; height: 600px; width: 100%; text-align:center;">  
                 <iframe src='https://view.officeapps.live.com/op/embed.aspx?src={{ urlencode(url($document->file_path.'/'.$document->file)) }}' width="100%" height="100% !important"  style="border:1px solid green;"></iframe>
@@ -30,21 +35,33 @@
             <div class="col-12" style="position: relative; width: 100%; text-align:center;">  
             <div id="pdfViewer" style=" text-align:center;"></div> 
             </div>
-            @elseif($file_type == 'jpg' || $file_type == 'jpeg' || $file_type == 'png' || $file_type == 'gif' || $file_type == 'webp')
-            @php
-                $imagePath = url($document->file_path.'/'.$document->file); // or storage_path() for images in storage
-                $imageData = file_get_contents($imagePath);
-                $base64 = base64_encode($imageData);
-                $base64Url = "data:$file_type;base64,$base64"; 
-            @endphp
-            <div class="col-12" style="position: relative; height: 600px; width: 100%; text-align:center;">  
-            <img src="{{$base64Url }}" alt="Image" width="100%">
-            </div>
-            @elseif($file_type == 'txt')
-            <div class="col-12" style="position: relative; width: 100%; text-align:center;">  
-                <pre style="white-space: pre-wrap; word-wrap: break-word;">{{ file_get_contents(public_path($document->file_path.'/'.$document->file)) }}</pre>
-            </div> 
+            @elseif($file_type == 'jpg' || $file_type == 'jpeg' || $file_type == 'png' || $file_type == 'gif' || $file_type == 'webp') 
+                    @php
+                     $imagePath = public_path($document->file_path.'/'.$document->file);
+                        $imageData = file_get_contents($imagePath); 
+                        $base64 = base64_encode($imageData);
+                        $base64Url = "data:$file_type;base64,$base64"; 
+                    @endphp
+                    <div class="col-12" style="position: relative; height: 600px; width: 100%; text-align:center;">  
+                        <img src="{{$base64Url }}" alt="Image" width="100%">
+                    </div>   
+                @elseif($file_type == 'txt') 
+                        <div class="col-12" style="position: relative; width: 100%; text-align:center;">  
+                            <pre style="white-space: pre-wrap; word-wrap: break-word; background:white; height:500%;">{{ file_get_contents(public_path($document->file_path.'/'.$document->file)) }}</pre>
+                        </div>  
+                @else
+                <div class="col-12" style="position: relative; height: 600px; width: 100%; text-align:center;">  
+                    <h4 style="color:yellow;">File Format Not Supported</h4>
+                </div> 
             @endif  
+            
+            
+            @else
+            <div class="col-12" style="position: relative; height: 600px; width: 100%; text-align:center;">  
+                        <h4 style="color:yellow;">File Not Found</h4>
+                    </div>  
+            @endif
+             
         </div>
     </div> 
     @section('javascript_section')
